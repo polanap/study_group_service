@@ -1,4 +1,4 @@
-package org.example.study_group_service.models.dto.output;
+package org.example.study_group_service.models.dto.outcomming;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;

@@ -1,15 +1,17 @@
 package org.example.study_group_service.models.entity;
 
 import jakarta.persistence.*;
+import org.example.study_group_service.models.Role;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Set;
 
 @Entity
-@Table(name = "users_role")
+@Table(name = "t_role")
 public class RoleEntity implements GrantedAuthority {
     @Id
     private Integer id;
+    @Enumerated(EnumType.STRING)
     private Role role;
     @Transient
     @ManyToMany(mappedBy = "roles")

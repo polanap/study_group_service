@@ -32,6 +32,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
     implementation("org.springframework:spring-tx:7.0.0-M8")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
+    implementation("javax.validation:validation-api:2.0.1.Final")
 }
 
 tasks.withType<Test> {

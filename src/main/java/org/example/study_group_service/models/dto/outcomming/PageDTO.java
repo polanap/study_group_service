@@ -1,4 +1,4 @@
-package org.example.study_group_service.models.dto.output;
+package org.example.study_group_service.models.dto.outcomming;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;

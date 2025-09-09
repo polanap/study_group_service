@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "t_user")
 @Data
 public class UserEntity implements UserDetails {
     @Id

@@ -1,10 +1,10 @@
 package org.example.study_group_service.service;
 
 import lombok.Getter;
-import org.example.study_group_service.models.dto.output.PageDTO;
-import org.example.study_group_service.models.dto.output.UserDTO;
-import org.example.study_group_service.models.dto.input.UserRegistration;
-import org.example.study_group_service.models.entity.Role;
+import org.example.study_group_service.models.dto.outcomming.PageDTO;
+import org.example.study_group_service.models.dto.outcomming.UserDTO;
+import org.example.study_group_service.models.dto.incomming.UserRegistration;
+import org.example.study_group_service.models.Role;
 import org.example.study_group_service.models.entity.RoleEntity;
 import org.example.study_group_service.models.entity.UserEntity;
 import org.example.study_group_service.repository.UserRepository;
@@ -33,6 +33,13 @@ public class UserService implements UserDetailsService {
     public PageDTO<UserDTO> allUsersPaginated(PageRequest pageRequest){
         var page = userRepository.findAll(pageRequest);
         return new PageDTO<UserDTO>(page, page.getContent().stream().map(u -> new UserDTO(u)).toList());
+    }
+
+    public UserEntity save(UserRegistration request) {
+        var user = new UserEntity();
+        user.setUsername(request.getUsername());
+        user.setPassword(encoder.encode(request.getPassword()));
+        return userRepository.save(user);
     }
 
 
