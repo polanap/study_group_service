@@ -7,6 +7,7 @@ import org.example.study_group_service.models.dto.incomming.UserRegistration;
 import org.example.study_group_service.models.Role;
 import org.example.study_group_service.models.entity.RoleEntity;
 import org.example.study_group_service.models.entity.UserEntity;
+import org.example.study_group_service.repository.RoleRepository;
 import org.example.study_group_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.bind.ValidationException;
 import java.time.LocalDateTime;
@@ -22,10 +24,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hibernate.internal.util.collections.CollectionHelper.setOf;
+
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Getter
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -35,22 +41,26 @@ public class UserService implements UserDetailsService {
         return new PageDTO<UserDTO>(page, page.getContent().stream().map(u -> new UserDTO(u)).toList());
     }
 
+    @Transactional
     public UserEntity save(UserRegistration request) {
         var user = new UserEntity();
         user.setUsername(request.getUsername());
         user.setPassword(encoder.encode(request.getPassword()));
+        user.setRegistrationDate(LocalDateTime.now());
+        var role = roleRepository.getRoleEntityByRole(Role.USER);
+        user.addRole(role);
+        role.addUser(user);
+        roleRepository.save(role);
         return userRepository.save(user);
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username);
-
+        UserEntity user = userRepository.getUserEntityByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
         return user;
     }
 
@@ -77,7 +87,7 @@ public class UserService implements UserDetailsService {
             throw new ValidationException("Passwords not equals");
         }
 
-        if (userRepository.findByUsername(request.getUsername()) != null) {
+        if (userRepository.getUserEntityByUsername(request.getUsername()) != null) {
             throw new ValidationException("User with this username already exist");
         }
         if (request.getUsername().length()<3 && request.getUsername().length()>30){

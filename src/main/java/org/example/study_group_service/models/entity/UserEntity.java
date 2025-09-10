@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
+import static org.hibernate.internal.util.collections.CollectionHelper.setOf;
+
 @Entity
 @Table(name = "t_user")
 @Data
@@ -25,8 +27,7 @@ public class UserEntity implements UserDetails {
     private String passwordConfirm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @Transient
-    private Set<RoleEntity> roles;
+    private Set<RoleEntity> roles = setOf();
 
     @Column(name = "email")
     private String email;
@@ -69,5 +70,19 @@ public class UserEntity implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public void addRole(RoleEntity role) {
+        synchronized (this.roles) {
+            this.roles.add(role);
+            role.getUsers().add(this);
+        }
+    }
+
+    public void removeRole(RoleEntity role) {
+        synchronized (this.roles) {
+            this.roles.remove(role);
+            role.getUsers().add(this);
+        }
     }
 }

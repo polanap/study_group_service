@@ -11,7 +11,7 @@
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(100)">
+            <column name="role" type="varchar(100)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -32,6 +32,17 @@
             </column>
             <column name="registration_date" type="dateTime">
                 <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="t_user_roles">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="roles_id" type="int">
+
+            </column>
+            <column name="users_id" type="int">
             </column>
         </createTable>
 
