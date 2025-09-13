@@ -39,10 +39,10 @@
             <column name="id" type="serial">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="roles_id" type="int">
+            <column name="role_id" type="int">
 
             </column>
-            <column name="users_id" type="int">
+            <column name="user_id" type="int">
             </column>
         </createTable>
 

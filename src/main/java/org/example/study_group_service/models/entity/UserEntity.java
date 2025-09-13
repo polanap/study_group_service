@@ -27,6 +27,11 @@ public class UserEntity implements UserDetails {
     private String passwordConfirm;
 
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "t_user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<RoleEntity> roles = setOf();
 
     @Column(name = "email")
@@ -73,16 +78,10 @@ public class UserEntity implements UserDetails {
     }
 
     public void addRole(RoleEntity role) {
-        synchronized (this.roles) {
-            this.roles.add(role);
-            role.getUsers().add(this);
-        }
+        roles.add(role);
     }
 
     public void removeRole(RoleEntity role) {
-        synchronized (this.roles) {
-            this.roles.remove(role);
-            role.getUsers().add(this);
-        }
+        roles.remove(role);
     }
 }

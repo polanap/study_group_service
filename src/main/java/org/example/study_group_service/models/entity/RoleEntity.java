@@ -17,8 +17,6 @@ public class RoleEntity implements GrantedAuthority {
     private Integer id;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @ManyToMany(mappedBy = "roles")
-    private Set<UserEntity> users = setOf();
 
     public RoleEntity() {
     }
@@ -36,18 +34,5 @@ public class RoleEntity implements GrantedAuthority {
     public String getAuthority() {
         return getRole().toString();
     }
-
-    public void addUser(UserEntity user) {
-        synchronized (this.users) {
-            this.users.add(user);
-            user.getRoles().add(this);
-        }
-    }
-
-    public void removeUser(UserEntity user) {
-        synchronized (this.users) {
-            this.users.remove(user);
-            user.getRoles().add(this);
-        }
-    }
+    
 }

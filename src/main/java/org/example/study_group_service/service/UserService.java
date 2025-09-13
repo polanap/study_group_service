@@ -49,7 +49,6 @@ public class UserService implements UserDetailsService {
         user.setRegistrationDate(LocalDateTime.now());
         var role = roleRepository.getRoleEntityByRole(Role.USER);
         user.addRole(role);
-        role.addUser(user);
         roleRepository.save(role);
         return userRepository.save(user);
     }
