@@ -6,4 +6,6 @@
 
     <include file="changeset/0001-create-tables.xml" relativeToChangelogFile="true" />
     <include file="changeset/0002-insert-roles.xml" relativeToChangelogFile="true" />
+    <include file="changeset/0003-insert-admin-user.xml" relativeToChangelogFile="true" />
+    <include file="changeset/0004-create-admin-request-table.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>

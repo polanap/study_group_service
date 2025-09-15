@@ -5,7 +5,6 @@ import org.example.study_group_service.models.dto.outcomming.PageDTO;
 import org.example.study_group_service.models.dto.outcomming.UserDTO;
 import org.example.study_group_service.models.dto.incomming.UserRegistration;
 import org.example.study_group_service.models.Role;
-import org.example.study_group_service.models.entity.RoleEntity;
 import org.example.study_group_service.models.entity.UserEntity;
 import org.example.study_group_service.repository.RoleRepository;
 import org.example.study_group_service.repository.UserRepository;
@@ -18,13 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.ValidationException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static org.hibernate.internal.util.collections.CollectionHelper.setOf;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -36,13 +31,19 @@ public class UserService implements UserDetailsService {
     @Getter
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public PageDTO<UserDTO> allUsersPaginated(PageRequest pageRequest){
+    public PageDTO<UserDTO> getAllUsersPaginated(PageRequest pageRequest) {
         var page = userRepository.findAll(pageRequest);
         return new PageDTO<UserDTO>(page, page.getContent().stream().map(u -> new UserDTO(u)).toList());
     }
 
     @Transactional
     public UserEntity save(UserRegistration request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("Passwords not equals");
+        }
+        if (userRepository.getUserEntityByUsername(request.getUsername()) != null) {
+            throw new IllegalArgumentException("User with this username already exist");
+        }
         var user = new UserEntity();
         user.setUsername(request.getUsername());
         user.setPassword(encoder.encode(request.getPassword()));
@@ -53,6 +54,41 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public void addAdminRole(int userId) {
+        addRole(userId, Role.ADMIN);
+    }
+
+    public void removeAdminRole(int userId) {
+        removeRole(userId, Role.ADMIN);
+    }
+
+    public void addRole(int userId, Role role) {
+        var roleEntity = roleRepository.getRoleEntityByRole(role);
+        var user = getById(userId);
+        user.addRole(roleEntity);
+        userRepository.save(user);
+    }
+
+    public void removeRole(int userId, Role role) {
+        var roleEntity = roleRepository.getRoleEntityByRole(role);
+        var user = getById(userId);
+        user.removeRole(roleEntity);
+        userRepository.save(user);
+    }
+
+    public boolean isAdmin(int userId) {
+        var user = getById(userId);
+        return hasRole(userId, Role.ADMIN);
+    }
+
+    public boolean hasRole(int userId, Role role) {
+        var user = getById(userId);
+        return user.getRoles().stream().map(roleEntity -> role).toList().contains(role);
+    }
+
+    public UserEntity getById(int userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -72,39 +108,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public UserEntity saveUser(UserRegistration request) throws ValidationException {
-        if (request.getUsername()==null){
-            throw new ValidationException("Username is required");
-        }
-        if (request.getPassword()==null){
-            throw new ValidationException("Password is required");
-        }
-        if (request.getConfirmPassword()==null){
-            throw new ValidationException("Confirm password is required");
-        }
-        if (!request.getPassword().equals(request.getConfirmPassword())){
-            throw new ValidationException("Passwords not equals");
-        }
-
-        if (userRepository.getUserEntityByUsername(request.getUsername()) != null) {
-            throw new ValidationException("User with this username already exist");
-        }
-        if (request.getUsername().length()<3 && request.getUsername().length()>30){
-            throw new ValidationException("username must be less than or equal to 30");
-        }
-        if (request.getPassword().length()<3 && request.getPassword().length()>30){
-            throw new ValidationException("password must be less than or equal to 30");
-        }
-
-        UserEntity user = new UserEntity();
-        user.setRoles(Collections.singleton(new RoleEntity(1, Role.USER)));
-        user.setUsername(request.getUsername());
-        user.setPassword(encoder.encode(request.getPassword()));
-        user.setRegistrationDate(LocalDateTime.now());
-        return userRepository.save(user);
-
-    }
-
     public boolean deleteUser(Integer userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
@@ -114,7 +117,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserEntity getUser(Integer id){
+    public UserEntity getUser(Integer id) {
         return userRepository.findById(id).orElse(null);
     }
 

@@ -23,9 +23,6 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
-    @Transient
-    private String passwordConfirm;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "t_user_roles",
@@ -36,9 +33,6 @@ public class UserEntity implements UserDetails {
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "last_access")
-    private LocalDateTime lastAccess;
 
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;

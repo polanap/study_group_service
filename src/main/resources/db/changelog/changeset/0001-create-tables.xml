@@ -28,9 +28,7 @@
             </column>
             <column name="email" type="varchar(100)">
             </column>
-            <column name="last_access" type="dateTime">
-            </column>
-            <column name="registration_date" type="dateTime">
+            <column name="registration_date" type="dateTime" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -2,6 +2,7 @@ package org.example.study_group_service.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.study_group_service.models.entity.RoleEntity;
 import org.example.study_group_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,13 +39,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/login", "/registration", "/")
-                                .permitAll()
-                                .anyRequest().authenticated())
-                .exceptionHandling(exh ->
-                        exh.authenticationEntryPoint((request, response, ex) -> {
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                        }));
+                                .requestMatchers("/login", "/registration").permitAll()
+                                .anyRequest().authenticated());
         return httpSecurity.build();
     }
 
