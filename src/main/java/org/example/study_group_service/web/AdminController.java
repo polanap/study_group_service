@@ -23,7 +23,7 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/request")
-    public void makeAdminRequests(@RequestParam int userId) {
+    public void makeAdminRequests(@RequestParam Long userId) {
         userService.addAdminRole(userId);
     }
 
@@ -41,26 +41,26 @@ public class AdminController {
 
 
     @PostMapping()
-    public void approveAdminRequest(@RequestParam int requestId) {
+    public void approveAdminRequest(@RequestParam Long requestId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity currentUser = (UserEntity) authentication.getPrincipal();
         adminService.approveRequest(requestId, currentUser.getId());
     }
 
     @DeleteMapping()
-    public void rejectAdminRequest(@RequestParam int requestId) {
+    public void rejectAdminRequest(@RequestParam Long requestId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity currentUser = (UserEntity) authentication.getPrincipal();
         adminService.rejectRequest(requestId, currentUser.getId());
     }
 
     @PostMapping("/user")
-    public void addAdminRules(@RequestParam int userId) {
+    public void addAdminRules(@RequestParam Long userId) {
         userService.addAdminRole(userId);
     }
 
     @DeleteMapping("/user")
-    public void removeAdminRules(@RequestParam int userId) {
+    public void removeAdminRules(@RequestParam Long userId) {
         userService.removeAdminRole(userId);
     }
 }

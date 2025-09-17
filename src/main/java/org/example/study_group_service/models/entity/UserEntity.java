@@ -17,7 +17,7 @@ import static org.hibernate.internal.util.collections.CollectionHelper.setOf;
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String username;
 

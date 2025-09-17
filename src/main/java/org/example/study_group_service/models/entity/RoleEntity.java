@@ -10,18 +10,18 @@ import org.springframework.security.core.GrantedAuthority;
 @Data
 public class RoleEntity implements GrantedAuthority {
     @Id
-    private Integer id;
+    private Long id;
     @Enumerated(EnumType.STRING)
     private Role role;
 
     public RoleEntity() {
     }
 
-    public RoleEntity(Integer id) {
+    public RoleEntity(Long id) {
         this.id = id;
     }
 
-    public RoleEntity(Integer id, Role role) {
+    public RoleEntity(Long id, Role role) {
         this.id = id;
         this.role = role;
     }

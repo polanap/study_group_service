@@ -20,7 +20,7 @@ public class AdminService {
     @Autowired
     private AdminRequestRepository adminRequestRepository;
 
-    public AdminRequestEntity makeRequest(int userId) {
+    public AdminRequestEntity makeRequest(Long userId) {
         if (userService.isAdmin(userId)) {
             return adminRequestRepository.findAdminRequestEntityByUserId(userId);
         }
@@ -39,16 +39,16 @@ public class AdminService {
         return adminRequestRepository.findAllByStatus(status, pageRequest);
     }
 
-    public AdminRequestEntity approveRequest(int requestId, int userId) {
+    public AdminRequestEntity approveRequest(Long requestId, Long userId) {
         return changeStatusOfRequest(requestId, userId, RequestStatus.APPROVED);
     }
 
-    public AdminRequestEntity rejectRequest(int requestId, int userId) {
+    public AdminRequestEntity rejectRequest(Long requestId, Long userId) {
         return changeStatusOfRequest(requestId, userId, RequestStatus.REJECTED);
     }
 
 
-    public AdminRequestEntity changeStatusOfRequest(int requestId, int userId, RequestStatus status) {
+    public AdminRequestEntity changeStatusOfRequest(Long requestId, Long userId, RequestStatus status) {
         var request = getRequestById(requestId);
         if (RequestStatus.isNext(request.getStatus(), status)) {
             throw new IllegalArgumentException("Can't change status of request to " + status + ". Current status is " + request.getStatus());
@@ -59,7 +59,7 @@ public class AdminService {
         return adminRequestRepository.save(request);
     }
 
-    public AdminRequestEntity getRequestById(int requestId) {
+    public AdminRequestEntity getRequestById(Long requestId) {
         return adminRequestRepository.findById(requestId).get();
     }
 }

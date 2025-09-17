@@ -11,12 +11,12 @@ import org.example.study_group_service.models.entity.UserEntity;
 @Data
 public class UserDTO {
   @JsonSetter("id")
-  private Integer id = null;
+  private Long id = null;
 
   @JsonSetter("username")
   private String username = null;
 
-  public UserDTO id(Integer id) {
+  public UserDTO id(Long id) {
     this.id = id;
     return this;
   }

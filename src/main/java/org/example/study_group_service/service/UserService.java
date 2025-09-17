@@ -54,39 +54,39 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public void addAdminRole(int userId) {
+    public void addAdminRole(Long userId) {
         addRole(userId, Role.ADMIN);
     }
 
-    public void removeAdminRole(int userId) {
+    public void removeAdminRole(Long userId) {
         removeRole(userId, Role.ADMIN);
     }
 
-    public void addRole(int userId, Role role) {
+    public void addRole(Long userId, Role role) {
         var roleEntity = roleRepository.getRoleEntityByRole(role);
         var user = getById(userId);
         user.addRole(roleEntity);
         userRepository.save(user);
     }
 
-    public void removeRole(int userId, Role role) {
+    public void removeRole(Long userId, Role role) {
         var roleEntity = roleRepository.getRoleEntityByRole(role);
         var user = getById(userId);
         user.removeRole(roleEntity);
         userRepository.save(user);
     }
 
-    public boolean isAdmin(int userId) {
+    public boolean isAdmin(Long userId) {
         var user = getById(userId);
         return hasRole(userId, Role.ADMIN);
     }
 
-    public boolean hasRole(int userId, Role role) {
+    public boolean hasRole(Long userId, Role role) {
         var user = getById(userId);
         return user.getRoles().stream().map(roleEntity -> role).toList().contains(role);
     }
 
-    public UserEntity getById(int userId) {
+    public UserEntity getById(Long userId) {
         return userRepository.findById(userId).orElseThrow();
     }
 
@@ -99,7 +99,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public UserEntity findUserById(Integer userId) {
+    public UserEntity findUserById(Long userId) {
         Optional<UserEntity> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new UserEntity());
     }
@@ -108,7 +108,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public boolean deleteUser(Integer userId) {
+    public boolean deleteUser(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
             return true;
@@ -117,7 +117,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserEntity getUser(Integer id) {
+    public UserEntity getUser(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 

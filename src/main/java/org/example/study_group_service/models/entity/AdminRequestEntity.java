@@ -12,16 +12,16 @@ import java.time.LocalDateTime;
 public class AdminRequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
     @Column(name = "processed_user_id")
-    private Integer processedUserId;
+    private Long processedUserId;
 
     @Column(name = "procession_time")
     private LocalDateTime processionTime;

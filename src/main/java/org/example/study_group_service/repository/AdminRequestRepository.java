@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AdminRequestRepository extends JpaRepository<AdminRequestEntity, Integer>{
-    AdminRequestEntity findAdminRequestEntityByUserId(Integer userId);
+public interface AdminRequestRepository extends JpaRepository<AdminRequestEntity, Long>{
+    AdminRequestEntity findAdminRequestEntityByUserId(Long userId);
 
     Page<AdminRequestEntity> findAllByStatus(RequestStatus status, Pageable pageable);
 }
