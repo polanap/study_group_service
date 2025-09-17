@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.example.study_group_service.models.Color;
 import org.example.study_group_service.models.Country;
+import org.example.study_group_service.models.dto.incomming.Location;
+import org.example.study_group_service.models.dto.incomming.Person;
 
 @Entity
 @Table(name = "person")
@@ -26,10 +28,23 @@ public class PersonEntity {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
-    private LocationEntity location; // Поле может быть null
+    private LocationEntity location = null; // Поле может быть null
 
     private Double height; // Поле может быть null, Значение поля должно быть больше 0
 
     @Enumerated(EnumType.STRING)
-    private Country nationality; // Поле может быть null
+    private Country nationality = null; // Поле может быть null
+
+
+    public PersonEntity(Person person){
+        this.name = person.getName();
+        this.eyeColor = person.getEyeColor();
+        this.hairColor = person.getHairColor();
+        this.height = person.getHeight();
+        this.nationality = person.getNationality();
+    }
+
+    public PersonEntity() {
+
+    }
 }

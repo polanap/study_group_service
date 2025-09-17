@@ -1,8 +1,8 @@
 package org.example.study_group_service.repository;
 
-import org.example.study_group_service.models.entity.AdminRequestEntity;
+import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StudyGroupRepository extends JpaRepository<AdminRequestEntity, Long> {}
+public interface StudyGroupRepository extends JpaRepository<StudyGroupEntity, Long> {}

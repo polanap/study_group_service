@@ -2,6 +2,7 @@ package org.example.study_group_service.models.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.example.study_group_service.models.dto.incomming.Location;
 
 @Entity
 @Table(name = "location")
@@ -16,4 +17,12 @@ public class LocationEntity {
 
     private double x;
     private int y;
+
+    public LocationEntity() {}
+
+    public LocationEntity(Location location) {
+        this.x = location.getX();
+        this.y = location.getY();
+        this.name = location.getName();
+    }
 }

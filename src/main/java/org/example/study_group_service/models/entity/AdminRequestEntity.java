@@ -28,4 +28,12 @@ public class AdminRequestEntity {
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status = RequestStatus.NEW;
+
+    public AdminRequestEntity() {}
+
+    public AdminRequestEntity(Long userId) {
+        this.userId = userId;
+        this.creationTime = LocalDateTime.now();
+        this.status = RequestStatus.NEW;
+    }
 }

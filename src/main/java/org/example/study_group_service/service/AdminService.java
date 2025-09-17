@@ -24,10 +24,7 @@ public class AdminService {
         if (userService.isAdmin(userId)) {
             return adminRequestRepository.findAdminRequestEntityByUserId(userId);
         }
-        val newRequest = new AdminRequestEntity();
-        newRequest.setUserId(userId);
-        newRequest.setCreationTime(LocalDateTime.now());
-        newRequest.setStatus(RequestStatus.NEW);
+        val newRequest = new AdminRequestEntity(userId);
         return adminRequestRepository.save(newRequest);
     }
 

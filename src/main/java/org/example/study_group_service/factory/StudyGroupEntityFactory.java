@@ -3,13 +3,12 @@ package org.example.study_group_service.factory;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
 import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.example.study_group_service.repository.CoordinatesRepository;
-import org.example.study_group_service.repository.LocationRepository;
 import org.example.study_group_service.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudyGroupFactory {
+public class StudyGroupEntityFactory {
 
     @Autowired
     private CoordinatesRepository coordinatesRepository;

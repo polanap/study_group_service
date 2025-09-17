@@ -1,4 +1,4 @@
-package org.example.study_group_service.fabric;
+package org.example.study_group_service.factory;
 
 import org.example.study_group_service.models.dto.incomming.Person;
 import org.example.study_group_service.models.entity.PersonEntity;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class PersonEntityFabric {
+public class PersonEntityFactory {
 
     @Autowired
     private LocationRepository locationRepository;
