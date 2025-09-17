@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet logicalFilePath="0004-create-admin-request-table.xml"
+               id="0004-create-admin-request-table.xml" author="polanap">
+
+        <createTable tableName="admin_request">
+            <column name="id" type="serial">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_time" type="datetime" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="processed_user_id" type="int"/>
+            <column name="procession_time" type="datetime"/>
+            <column name="status" type="varchar(50)"/>
+        </createTable>
+
+    </changeSet>
+
+</databaseChangeLog>

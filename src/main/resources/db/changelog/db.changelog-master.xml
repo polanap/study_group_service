@@ -4,8 +4,9 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="changeset/0001-create-tables.xml" relativeToChangelogFile="true" />
-    <include file="changeset/0002-insert-roles.xml" relativeToChangelogFile="true" />
-    <include file="changeset/0003-insert-admin-user.xml" relativeToChangelogFile="true" />
-    <include file="changeset/0004-create-admin-request-table.xml" relativeToChangelogFile="true" />
+    <include file="changeset/0001-create-tables.sql" relativeToChangelogFile="true" />
+    <include file="changeset/0002-insert-roles.sql" relativeToChangelogFile="true" />
+    <include file="changeset/0003-insert-admin-user.sql" relativeToChangelogFile="true" />
+    <include file="changeset/0004-create-admin-request-table.sql" relativeToChangelogFile="true" />
+    <include file="changeset/0005-create-basic-tables.sql" relativeToChangelogFile="true" />
 </databaseChangeLog>

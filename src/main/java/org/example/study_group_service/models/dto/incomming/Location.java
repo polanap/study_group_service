@@ -6,9 +6,9 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class Location {
-    @NotNull
-    private Double x; //Поле не может быть null
-    private long y;
-    @NotNull
-    private Double z; //Поле не может быть null
+    @NotNull(message = "Name cannot be null.") // Поле не может быть null
+    private String name; // Поле не может быть null
+
+    private double x;
+    private int y;
 }

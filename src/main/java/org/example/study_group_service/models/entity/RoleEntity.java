@@ -5,10 +5,6 @@ import lombok.Data;
 import org.example.study_group_service.models.Role;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Set;
-
-import static org.hibernate.internal.util.collections.CollectionHelper.setOf;
-
 @Entity
 @Table(name = "t_role")
 @Data

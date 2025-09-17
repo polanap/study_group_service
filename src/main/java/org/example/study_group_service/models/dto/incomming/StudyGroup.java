@@ -4,35 +4,37 @@ import lombok.Data;
 import org.example.study_group_service.models.FormOfEducation;
 import org.example.study_group_service.models.Semester;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import java.util.Date;
+import javax.validation.constraints.*;
 
 @Data
 public class StudyGroup {
-//    private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    @NotNull
-    @NotEmpty
-    private String name; //Поле не может быть null, Строка не может быть пустой
-    @NotNull
-    private Coordinates coordinates; //Поле не может быть null
-    @NotNull
-    private Date creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    @Positive
-    private Integer studentsCount; //Значение поля должно быть больше 0, Поле может быть null
-    @NotNull
-    @Positive
-    private Integer expelledStudents; //Значение поля должно быть больше 0, Поле не может быть null
-    @NotNull
-    @Positive
-    private Long transferredStudents; //Значение поля должно быть больше 0, Поле не может быть null
-    private FormOfEducation formOfEducation; //Поле может быть null
-    @Positive
-    private long shouldBeExpelled; //Значение поля должно быть больше 0
-    @Positive
-    private float averageMark; //Значение поля должно быть больше 0
-    private Semester semesterEnum; //Поле может быть null
-    @NotNull
-    private Person groupAdmin; //Поле не может быть null
+    @NotNull(message = "Name cannot be null.") // Поле не может быть null
+    @NotBlank(message = "Name cannot be empty.") // Строка не может быть пустой
+    private String name;
+
+    @NotNull(message = "Coordinates cannot be null.") // Поле не может быть null
+    private Long coordinatesId;
+
+    @PositiveOrZero(message = "Students count must be 0 or greater.") // Значение поля должно быть больше 0, Поле может быть null
+    private Integer studentsCount;
+
+    @NotNull(message = "Expelled students cannot be null.") // Поле не может быть null
+    @Positive(message = "Expelled students must be greater than 0.") // Значение поля должно быть больше 0
+    private Integer expelledStudents;
+
+    @Positive(message = "Transferred students must be greater than 0.") // Значение поля должно быть больше 0
+    private int transferredStudents;
+
+    private FormOfEducation formOfEducation; // Поле может быть null
+
+    @PositiveOrZero(message = "Should be expelled must be 0 or greater.") // Значение поля должно быть больше 0, Поле может быть null
+    private Long shouldBeExpelled;
+
+    @NotNull(message = "Average mark cannot be null.") // Поле не может быть null
+    @Positive(message = "Average mark must be greater than 0.") // Значение поля должно быть больше 0
+    private Float averageMark;
+
+    private Semester semesterEnum; // Поле может быть null
+
+    private Long groupAdminId; // Поле может быть null
 }
