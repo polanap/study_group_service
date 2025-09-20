@@ -32,9 +32,4 @@ public class StudyGroupService {
     public Page<StudyGroupEntity> getAllPaginated(PageRequest pageRequest) {
         return studyGroupRepository.findAll(pageRequest);
     }
-
-    public Page<StudyGroupEntity> getAllPaginatedFilterBy(PageRequest pageRequest) {
-        // TODO
-        return studyGroupRepository.findAll(pageRequest);
-    }
 }
