@@ -37,14 +37,14 @@ public class PersonController {
 
     @GetMapping("/filtered")
     public Page<PersonEntity> getAllFiltered(
-            @RequestParam String name,
-            @RequestParam String eyeColor,
-            @RequestParam String hairColor,
-            @RequestParam String nationality,
-            @RequestParam SortOrder byName,
-            @RequestParam SortOrder byEyeColor,
-            @RequestParam SortOrder byHairColor,
-            @RequestParam SortOrder byNationality,
+            @RequestParam(required=false) String name,
+            @RequestParam(required=false) String eyeColor,
+            @RequestParam(required=false) String hairColor,
+            @RequestParam(required=false) String nationality,
+            @RequestParam(required=false) SortOrder byName,
+            @RequestParam(required=false) SortOrder byEyeColor,
+            @RequestParam(required=false) SortOrder byHairColor,
+            @RequestParam(required=false) SortOrder byNationality,
             @RequestParam int page,
             @RequestParam int size
     ) {
@@ -58,10 +58,10 @@ public class PersonController {
                         size,
                         Sort.by(
                                 listOf(
-                                        byName.toSpringSortOrder("name"),
-                                        byEyeColor.toSpringSortOrder("eyeColor"),
-                                        byHairColor.toSpringSortOrder("hairColor"),
-                                        byNationality.toSpringSortOrder("nationality")
+                                        byName != null ? byName.toSpringSortOrder("name") : null,
+                                        byEyeColor != null ? byEyeColor.toSpringSortOrder("eyeColor") : null,
+                                        byHairColor != null ? byHairColor.toSpringSortOrder("hairColor") : null,
+                                        byNationality != null ? byNationality.toSpringSortOrder("nationality") : null
                                 ).stream().filter(Objects::nonNull).toList()
                         )
                 )

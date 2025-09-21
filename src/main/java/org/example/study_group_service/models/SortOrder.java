@@ -13,7 +13,7 @@ public enum SortOrder {
     }
 
     public Sort.Order toSpringSortOrder(String property) {
-        return direction == null ? null : new Sort.Order(this.direction, property);
+        return new Sort.Order(this.direction, property);
     }
 
 }
