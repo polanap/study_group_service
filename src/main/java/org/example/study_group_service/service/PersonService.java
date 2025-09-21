@@ -30,7 +30,19 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
-    public Page<PersonEntity> getAllPaginated(PageRequest pageRequest) {
-        return personRepository.findAll(pageRequest);
+    public Page<PersonEntity> getAllFiltered(
+            String name,
+            String eyeColor,
+            String hairColor,
+            String nationality,
+            PageRequest pageRequest
+    ) {
+        return personRepository.getPageFiltered(
+                name,
+                eyeColor,
+                hairColor,
+                nationality,
+                pageRequest
+        );
     }
 }

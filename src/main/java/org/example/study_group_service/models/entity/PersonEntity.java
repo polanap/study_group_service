@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.example.study_group_service.models.Color;
 import org.example.study_group_service.models.Country;
-import org.example.study_group_service.models.dto.incomming.Location;
 import org.example.study_group_service.models.dto.incomming.Person;
 
 @Entity
