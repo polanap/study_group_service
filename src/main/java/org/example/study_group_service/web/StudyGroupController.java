@@ -2,6 +2,7 @@ package org.example.study_group_service.web;
 
 import org.example.study_group_service.models.SortOrder;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
+import org.example.study_group_service.models.dto.outcomming.CountDTO;
 import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.example.study_group_service.service.StudyGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,5 +67,15 @@ public class StudyGroupController {
                         )
                 )
         );
+    }
+
+    @GetMapping("/count/greater-than")
+    public CountDTO findAverageMarkCount(@RequestParam Float averageMark){
+        return new CountDTO(studyGroupService.countWithAverageMark(averageMark));
+    }
+
+    @DeleteMapping("/by-average-mark")
+    public StudyGroupEntity deleteByAverageMark(@RequestParam Float averageMark){
+        return studyGroupService.deleteRandomByAverageMark(averageMark);
     }
 }

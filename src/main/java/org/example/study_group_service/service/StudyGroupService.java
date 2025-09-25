@@ -2,7 +2,6 @@ package org.example.study_group_service.service;
 
 import org.example.study_group_service.factory.StudyGroupEntityFactory;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
-import org.example.study_group_service.models.entity.PersonEntity;
 import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.example.study_group_service.repository.StudyGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +43,19 @@ public class StudyGroupService {
                 semesterEnum  == null ? "" : semesterEnum,
                 pageRequest
         );
+    }
+
+    public Long countWithAverageMark(Float averageMark) {
+        return studyGroupRepository.findAverageMarkCount(averageMark);
+    }
+
+    public StudyGroupEntity deleteRandomByAverageMark(Float averageMark) {
+        var studyGroup = studyGroupRepository.getRandomWithAverageMark(averageMark);
+        studyGroupRepository.delete(studyGroup);
+        return studyGroup;
+    }
+
+    public void deleteRandomByAverageMarkWithoutEntityReturning(Float averageMark) {
+        studyGroupRepository.deleteByAverageMarkCount(averageMark);
     }
 }

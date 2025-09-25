@@ -4,6 +4,7 @@ import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -37,4 +38,38 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroupEntity, Lo
             String semesterEnum,
             Pageable pageable
     );
+
+    @Query("""
+        SELECT COUNT (sg)
+        FROM StudyGroupEntity sg
+        WHERE sg.averageMark > :averageMark
+    """
+    )
+    Long findAverageMarkCount(Float averageMark);
+
+    @Modifying
+    @Query(
+        value = """
+        DELETE FROM study_groupEntity sg
+        WHERE sg.id IN (
+                SELECT sgt.id
+                FROM study_groupEntity sgt
+                WHERE sgt.average_mark = :averageMark
+                LIMIT 1
+            )
+    """,
+            nativeQuery = true
+    )
+    void deleteByAverageMarkCount(Float averageMark);
+
+    @Query(
+            value = """
+        SELECT sg.id
+                FROM study_groupEntity sg
+                WHERE sg.average_mark = :averageMark
+                LIMIT 1
+    """,
+            nativeQuery = true
+    )
+    StudyGroupEntity getRandomWithAverageMark(Float averageMark);
 }
