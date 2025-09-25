@@ -36,6 +36,10 @@ public class UserService implements UserDetailsService {
         return new PageDTO<UserDTO>(page, page.getContent().stream().map(u -> new UserDTO(u)).toList());
     }
 
+    public boolean equalPasswords(UserEntity user, String password) {
+        return encoder.matches(password, user.getPassword());
+    }
+
     @Transactional
     public UserEntity save(UserRegistration request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -121,4 +125,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public UserEntity findByUsername(String username) {
+        return userRepository.getUserEntityByUsername(username);
+    }
 }

@@ -2,6 +2,7 @@ package org.example.study_group_service.service;
 
 import org.example.study_group_service.factory.StudyGroupEntityFactory;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
+import org.example.study_group_service.models.entity.PersonEntity;
 import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.example.study_group_service.repository.StudyGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,10 @@ public class StudyGroupService {
     StudyGroupRepository studyGroupRepository;
 
     @Autowired
-    StudyGroupEntityFactory studyGroupEntityFabric;
+    StudyGroupEntityFactory studyGroupEntityFactory;
 
     public StudyGroupEntity save(StudyGroup studyGroup) {
-        return studyGroupRepository.save(studyGroupEntityFabric.create(studyGroup));
+        return studyGroupRepository.save(studyGroupEntityFactory.create(studyGroup));
     }
 
     public StudyGroupEntity findById(Long id) {
@@ -29,7 +30,19 @@ public class StudyGroupService {
         studyGroupRepository.deleteById(id);
     }
 
-    public Page<StudyGroupEntity> getAllPaginated(PageRequest pageRequest) {
-        return studyGroupRepository.findAll(pageRequest);
+    public Page<StudyGroupEntity> getAllFiltered(
+            String name,
+            String coordinates,
+            String formOfEducation,
+            String semesterEnum,
+            PageRequest pageRequest
+    ) {
+        return studyGroupRepository.getPageFiltered(
+                name == null ? "" : name,
+                coordinates  == null ? "" : coordinates,
+                formOfEducation   == null ? "" : formOfEducation,
+                semesterEnum  == null ? "" : semesterEnum,
+                pageRequest
+        );
     }
 }

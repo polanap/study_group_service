@@ -16,10 +16,10 @@ public class PersonService {
     PersonRepository personRepository;
 
     @Autowired
-    PersonEntityFactory personEntityFabric;
+    PersonEntityFactory personEntityFactory;
 
     public PersonEntity save(Person person) {
-        return personRepository.save(personEntityFabric.create(person));
+        return personRepository.save(personEntityFactory.create(person));
     }
 
     public PersonEntity findById(Long id) {
@@ -38,10 +38,10 @@ public class PersonService {
             PageRequest pageRequest
     ) {
         return personRepository.getPageFiltered(
-                name,
-                eyeColor,
-                hairColor,
-                nationality,
+                name == null ? "" : name,
+                eyeColor  == null ? "" : eyeColor,
+                hairColor   == null ? "" : hairColor,
+                nationality  == null ? "" : nationality,
                 pageRequest
         );
     }

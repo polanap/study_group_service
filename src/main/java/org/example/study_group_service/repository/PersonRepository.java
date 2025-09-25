@@ -12,29 +12,23 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     @Query(
             value = """
-                SELECT *        
-                FROM person p
-                WHERE
-                    (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) 
-                    OR (:eyeColor IS NULL OR LOWER(p.eye_color) LIKE CONCAT('%', LOWER(:eyeColor), '%'))
-                    OR (:hairColor IS NULL OR LOWER(p.hair_color) LIKE CONCAT('%', LOWER(:hairColor), '%'))
-                    OR (:nationality IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%'))
-                    
-                    """,
+        SELECT p 
+        FROM PersonEntity p 
+        WHERE
+            (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) 
+            AND (:eyeColor IS NULL OR LOWER(p.eyeColor) LIKE CONCAT('%', LOWER(:eyeColor), '%'))
+            AND (:hairColor IS NULL OR LOWER(p.hairColor) LIKE CONCAT('%', LOWER(:hairColor), '%'))
+            AND (:nationality IS NULL OR LOWER(p.nationality) LIKE CONCAT('%', LOWER(:nationality), '%'))
+    """,
             countQuery = """
-                SELECT
-                    COUNT(*)
-                FROM (
-                    SELECT *        
-                    FROM person p
-                    WHERE
-                        (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) 
-                        OR (:eyeColor IS NULL OR LOWER(p.eye_color) LIKE CONCAT('%', LOWER(:eyeColor), '%'))
-                        OR (:hairColor IS NULL OR LOWER(p.hair_color) LIKE CONCAT('%', LOWER(:hairColor), '%'))
-                        OR (:nationality IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%'))
-                ) as countQuery
-        """,
-            nativeQuery = true
+        SELECT COUNT(p) 
+        FROM PersonEntity p 
+        WHERE
+            (:name IS NULL OR LOWER(p.name) LIKE CONCAT('%', LOWER(:name), '%')) 
+            AND (:eyeColor IS NULL OR LOWER(p.eyeColor) LIKE CONCAT('%', LOWER(:eyeColor), '%'))
+            AND (:hairColor IS NULL OR LOWER(p.hairColor) LIKE CONCAT('%', LOWER(:hairColor), '%'))
+            AND (:nationality IS NULL OR LOWER(p.nationality) LIKE CONCAT('%', LOWER(:nationality), '%'))
+    """
     )
     Page<PersonEntity> getPageFiltered(
             String name,

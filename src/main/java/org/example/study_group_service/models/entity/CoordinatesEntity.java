@@ -2,6 +2,8 @@ package org.example.study_group_service.models.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.example.study_group_service.models.dto.incomming.Coordinates;
+
 import javax.validation.constraints.Max;
 
 @Entity
@@ -18,4 +20,13 @@ public class CoordinatesEntity {
     @Column(nullable = false) // Поле не может быть null
     @Max(value = 708) // Максимальное значение поля: 708
     private Integer y; // Поле не может быть null
+
+    public CoordinatesEntity(Coordinates coordinates) {
+        this.x = coordinates.getX();
+        this.y = coordinates.getY();
+    }
+
+    public CoordinatesEntity() {
+
+    }
 }
