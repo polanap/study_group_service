@@ -55,4 +55,22 @@ public class PersonService {
         var toGroup = studyGroupRepository.findById(toId).orElseThrow();
         personRepository.moveAllStudents(fromGroup, toGroup);
     }
+
+    public void enroll(Long personId, Long groupId) {
+        var person =  personRepository.findById(personId).orElseThrow();
+        var group =  studyGroupRepository.findById(groupId).orElseThrow();
+        person.setGroup(group);
+        personRepository.save(person);
+    }
+
+    public void unenroll(Long personId, Long groupId) {
+        var person =  personRepository.findById(personId).orElseThrow();
+        var group =  studyGroupRepository.findById(groupId).orElseThrow();
+        if (person.getGroup().getId().equals(group.getId())) {
+            person.setGroup(null);
+            personRepository.save(person);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }
