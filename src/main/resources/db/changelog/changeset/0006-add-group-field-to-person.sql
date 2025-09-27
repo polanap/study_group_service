@@ -1,0 +1,2 @@
+ALTER TABLE person ADD COLUMN group_id BIGINT;
+

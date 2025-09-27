@@ -4,6 +4,7 @@ import org.example.study_group_service.factory.PersonEntityFactory;
 import org.example.study_group_service.models.dto.incomming.Person;
 import org.example.study_group_service.models.entity.PersonEntity;
 import org.example.study_group_service.repository.PersonRepository;
+import org.example.study_group_service.repository.StudyGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,9 @@ public class PersonService {
 
     @Autowired
     PersonEntityFactory personEntityFactory;
+
+    @Autowired
+    StudyGroupRepository studyGroupRepository;
 
     public PersonEntity save(Person person) {
         return personRepository.save(personEntityFactory.create(person));
@@ -44,5 +48,11 @@ public class PersonService {
                 nationality  == null ? "" : nationality,
                 pageRequest
         );
+    }
+
+    public void moveAllStudents(Long fromId, Long toId) {
+        var fromGroup = studyGroupRepository.findById(fromId).orElseThrow();
+        var toGroup = studyGroupRepository.findById(toId).orElseThrow();
+        personRepository.moveAllStudents(fromGroup, toGroup);
     }
 }

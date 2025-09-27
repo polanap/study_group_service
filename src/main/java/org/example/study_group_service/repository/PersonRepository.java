@@ -1,9 +1,11 @@
 package org.example.study_group_service.repository;
 
 import org.example.study_group_service.models.entity.PersonEntity;
+import org.example.study_group_service.models.entity.StudyGroupEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -37,4 +39,11 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
             String nationality,
             Pageable pageable
     );
+
+    @Modifying
+    @Query(value = """
+    UPDATE PersonEntity SET group = :toGroup WHERE group = :fromGroup
+    """
+    )
+    void moveAllStudents(StudyGroupEntity toGroup, StudyGroupEntity fromGroup);
 }

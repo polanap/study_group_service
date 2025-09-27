@@ -67,4 +67,9 @@ public class PersonController {
                 )
         );
     }
+
+    @GetMapping("/move")
+    public void moveAllStudents(@RequestParam Long fromId, @RequestParam Long toId) {
+        personService.moveAllStudents(fromId, toId);
+    }
 }

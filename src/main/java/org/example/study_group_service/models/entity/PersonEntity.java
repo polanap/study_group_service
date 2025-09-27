@@ -34,6 +34,9 @@ public class PersonEntity {
     @Enumerated(EnumType.STRING)
     private Country nationality = null; // Поле может быть null
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private StudyGroupEntity group = null;
+
 
     public PersonEntity(Person person){
         this.name = person.getName();

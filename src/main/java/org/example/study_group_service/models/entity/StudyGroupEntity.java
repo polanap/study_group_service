@@ -8,6 +8,8 @@ import org.example.study_group_service.models.dto.incomming.StudyGroup;
 
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "study_group")
@@ -54,6 +56,10 @@ public class StudyGroupEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "group_admin_id")
     private PersonEntity groupAdmin = null; // Поле может быть null
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    private List<PersonEntity> students = new ArrayList<>();
 
     public StudyGroupEntity () {}
 
