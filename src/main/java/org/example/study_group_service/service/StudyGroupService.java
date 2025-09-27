@@ -58,4 +58,8 @@ public class StudyGroupService {
     public void deleteRandomByAverageMarkWithoutEntityReturning(Float averageMark) {
         studyGroupRepository.deleteByAverageMarkCount(averageMark);
     }
+
+    public Long getExpelledCount() {
+        return studyGroupRepository.getCountOfExpelled();
+    }
 }

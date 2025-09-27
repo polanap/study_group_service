@@ -37,9 +37,6 @@ public class PersonEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private StudyGroupEntity group = null;
 
-    @Column(name = "is_expelled")
-    private Boolean isExpelled = false;
-
 
     public PersonEntity(Person person){
         this.name = person.getName();

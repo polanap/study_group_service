@@ -72,4 +72,9 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroupEntity, Lo
             nativeQuery = true
     )
     StudyGroupEntity getRandomWithAverageMark(Float averageMark);
+
+    @Query("""
+    SELECT SUM(sg.expelledStudents) FROM StudyGroupEntity sg
+""")
+    Long getCountOfExpelled();
 }

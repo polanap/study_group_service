@@ -32,21 +32,8 @@ public class SecurityConfig {
     BasicAuthManager basicAuthManager;
 
     @Bean
-    public BasicAuthFilter basicAuthFilter() {
-        var filter = new BasicAuthFilter(basicAuthManager, new BasicAuthenticationConverter());
-        filter.setSuccessHandler(new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-            }
-        });
-        filter.setFailureHandler(new AuthenticationFailureHandler() {
-            @Override
-            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                response.sendError(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
-            }
-        });
-        return filter;
+    public AuthenticationFilter basicAuthFilter() {
+        return new AuthenticationFilter(basicAuthManager, new BasicAuthenticationConverter());
     }
 
     @Bean
@@ -59,7 +46,7 @@ public class SecurityConfig {
                         configurer
                                 .requestMatchers("/login", "/registration").permitAll()
                                 .anyRequest().authenticated())
-                .addFilterBefore(basicAuthFilter(), BasicAuthFilter.class);
+                .addFilterBefore(basicAuthFilter(), AuthenticationFilter.class);
         return httpSecurity.build();
     }
 

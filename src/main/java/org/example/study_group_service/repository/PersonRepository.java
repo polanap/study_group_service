@@ -48,9 +48,4 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
     void moveAllStudents(StudyGroupEntity toGroup, StudyGroupEntity fromGroup);
 
 
-    @Query("""
-    SELECT COUNT(p) FROM PersonEntity p WHERE p.isExpelled AND p.group IS NOT NULL
-""")
-    void getCountOfExpelledWithGroup();
-
 }

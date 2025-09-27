@@ -78,4 +78,10 @@ public class StudyGroupController {
     public StudyGroupEntity deleteByAverageMark(@RequestParam Float averageMark){
         return studyGroupService.deleteRandomByAverageMark(averageMark);
     }
+
+    @GetMapping("/expelled")
+    public CountDTO findCountOfExpelled(){
+        return new CountDTO(studyGroupService.getExpelledCount());
+    }
+
 }
