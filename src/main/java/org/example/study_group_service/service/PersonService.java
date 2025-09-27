@@ -73,4 +73,8 @@ public class PersonService {
             throw new IllegalArgumentException();
         }
     }
+
+    public void getCountOfExpelledWithGroup() {
+
+    }
 }

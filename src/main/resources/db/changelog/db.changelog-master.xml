@@ -10,5 +10,6 @@
     <include file="changeset/0004-create-admin-request-table.sql" relativeToChangelogFile="true" />
     <include file="changeset/0005-create-basic-tables.sql" relativeToChangelogFile="true" />
     <include file="changeset/0006-add-group-field-to-person.sql" relativeToChangelogFile="true"/>
+    <include file="changeset/0007-add-is-expelled-field-to-person.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
