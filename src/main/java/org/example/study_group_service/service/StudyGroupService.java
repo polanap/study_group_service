@@ -1,5 +1,6 @@
 package org.example.study_group_service.service;
 
+import jakarta.transaction.Transactional;
 import org.example.study_group_service.factory.StudyGroupEntityFactory;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
 import org.example.study_group_service.models.entity.StudyGroupEntity;
@@ -61,5 +62,15 @@ public class StudyGroupService {
 
     public Long getExpelledCount() {
         return studyGroupRepository.getCountOfExpelled();
+    }
+
+
+    @Transactional
+    public void move(Long fromId, Long toId) {
+        studyGroupRepository.findById(fromId).orElseThrow();
+        studyGroupRepository.findById(toId).orElseThrow();
+
+        studyGroupRepository.copyStudentsFromGroup(fromId, toId);
+        studyGroupRepository.deleteStudentsFromGroup(fromId);
     }
 }

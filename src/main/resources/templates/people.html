@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>People List</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            margin: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #5cb85c;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        /* Pagination Styles */
+        div {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #5cb85c;
+            margin: 0 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error Message Styles */
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        /* Addition of New Person Form */
+        h2 {
+            text-align: center;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            form {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            input[type="text"],
+            select {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+        /* Basic styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Basic styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Navigation Menu -->
+<nav>
+    <a href="/content-groups">Content Groups</a>
+    <a href="/locations">Locations</a>
+</nav>
+
+<h1>People List</h1>
+
+<!-- Filter Form -->
+<form th:action="@{/people}" method="get">
+    <input type="text" name="name" placeholder="Name" th:value="${filterName}" />
+    <input type="text" name="eyeColor" placeholder="Eye Color" th:value="${filterEyeColor}" />
+    <input type="text" name="hairColor" placeholder="Hair Color" th:value="${filterHairColor}" />
+    <input type="text" name="nationality" placeholder="Nationality" th:value="${filterNationality}" />
+    <button type="submit">Filter</button>
+</form>
+
+<form th:action="@{/people}" method="get">
+    <!-- Sort By Options -->
+    <select name="byName">
+        <option value="">Sort by Name</option>
+        <option value="ASC" th:selected="${byName == 'ASC'}">Ascending</option>
+        <option value="DESC" th:selected="${byName == 'DESC'}">Descending</option>
+    </select>
+    <select name="byEyeColor">
+        <option value="">Sort by Eye Color</option>
+        <option value="ASC" th:selected="${byEyeColor == 'ASC'}">Ascending</option>
+        <option value="DESC" th:selected="${byEyeColor == 'DESC'}">Descending</option>
+    </select>
+    <select name="byHairColor">
+        <option value="">Sort by Hair Color</option>
+        <option value="ASC" th:selected="${byHairColor == 'ASC'}">Ascending</option>
+        <option value="DESC" th:selected="${byHairColor == 'DESC'}">Descending</option>
+    </select>
+    <select name="byNationality">
+        <option value="">Sort by Nationality</option>
+        <option value="ASC" th:selected="${byNationality == 'ASC'}">Ascending</option>
+        <option value="DESC" th:selected="${byNationality == 'DESC'}">Descending</option>
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- Table for displaying persons -->
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Eye Color</th>
+        <th>Hair Color</th>
+        <th>Nationality</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="person : ${people.content}">
+        <td th:text="${person.name}"></td>
+        <td th:text="${person.eyeColor}"></td>
+        <td th:text="${person.hairColor}"></td>
+        <td th:text="${person.nationality}"></td>
+        <td>
+<!--            <a th:href="@{/people/{id}(id=${person.id})}">Update</a>-->
+            <button th:type="button" th:onclick="'deletePerson(' + ${person.id} + ')'" >Delete</button>
+            <!--            <a href="#" onclick="deletePerson(${person.id}); return false;">Delete</a>-->
+        </td>
+    </tr>
+
+    <!-- Сообщение об отсутствии результатов -->
+    <tr th:if="${noResults}">
+        <td colspan="5" style="text-align:center;">
+            <strong>Результатов не найдено.</strong>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<div>
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{/people(page=${currentPage - 1}, size=${people.size})}">Previous</a>
+    </span>
+    <span th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{/people(page=${currentPage + 1}, size=${people.size})}">Next</a>
+    </span>
+</div>
+
+<!-- Button to Open the Modal -->
+<button id="addPersonBtn">Add New Person</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Person</h2>
+        <form id="addPersonForm" th:action="@{/people}" method="post">
+            <div>
+                <label>Name:</label>
+                <input type="text" name="name" placeholder="Name" required />
+                <div class="error-message" id="nameError" style="color: red; display: none;"></div>
+            </div>
+            <div>
+                <label>Eye Color:</label>
+                <select name="eyeColor" required>
+                    <option value="GREEN">Green</option>
+                    <option value="RED">Brown</option>
+                    <option value="BLUE">Blue</option>
+                    <option value="YELLOW">Gray</option>
+                </select>
+                <div class="error-message" id="eyeColorError" style="color: red; display: none;"></div>
+            </div>
+            <div>
+                <label>Hair Color:</label>
+                <select name="hairColor" required>
+                    <option value="GREEN">Green</option>
+                    <option value="RED">Brown</option>
+                    <option value="BLUE">Blond</option>
+                    <option value="YELLOW">Gray</option>
+                </select>
+                <div class="error-message" id="hairColorError" style="color: red; display: none;"></div>
+            </div>
+            <div>
+                <label>Nationality:</label>
+                <select name="nationality" required>
+                    <option value="RUSSIA">Russia</option>
+                    <option value="UNITED_KINGDOM">UK</option>
+                    <option value="CHINA">China</option>
+                    <option value="INDIA">India</option>
+                </select>
+                <div class="error-message" id="nationalityError" style="color: red; display: none;"></div>
+            </div>
+            <button type="submit">Add Person</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("myModal");
+
+    var btn = document.getElementById("addPersonBtn");
+
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function deletePerson(id) {
+        if (confirm('Вы уверены, что хотите удалить этого человека?')) {
+            fetch(`/people/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Перезагрузить страницу после успешного удаления
+                    } else {
+                        alert('Произошла ошибка при удалении.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при удалении.');
+                });
+        }
+    }
+
+</script>
+
+</body>
+</html>
+

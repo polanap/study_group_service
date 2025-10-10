@@ -67,19 +67,4 @@ public class PersonController {
                 )
         );
     }
-
-    @GetMapping("/move")
-    public void moveAllStudents(@RequestParam Long fromId, @RequestParam Long toId) {
-        personService.moveAllStudents(fromId, toId);
-    }
-
-    @PostMapping("/{personId}/enroll")
-    public void enrollToGroup(@PathVariable("personId") Long personId, @RequestParam Long groupId){
-        personService.enroll(personId, groupId);
-    }
-
-    @DeleteMapping("/{personId}/enroll")
-    public void unenrollFromGroup(@PathVariable("personId") Long personId, @RequestParam Long groupId){
-        personService.unenroll(personId, groupId);
-    }
 }

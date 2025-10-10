@@ -84,4 +84,8 @@ public class StudyGroupController {
         return new CountDTO(studyGroupService.getExpelledCount());
     }
 
+    @PostMapping("/move")
+    public void move(@RequestParam Long fromId, @RequestParam Long toId){
+
+    }
 }

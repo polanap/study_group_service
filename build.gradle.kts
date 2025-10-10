@@ -35,6 +35,7 @@ dependencies {
     implementation("org.springframework:spring-tx:6.2.10")
     implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     implementation("javax.validation:validation-api:2.0.1.Final")
+    implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
 }
 
 tasks.withType<Test> {

@@ -77,4 +77,18 @@ public interface StudyGroupRepository extends JpaRepository<StudyGroupEntity, Lo
     SELECT SUM(sg.expelledStudents) FROM StudyGroupEntity sg
 """)
     Long getCountOfExpelled();
+
+    @Modifying
+    @Query("""
+    UPDATE StudyGroupEntity st1 SET st1.studentsCount = (
+    SELECT st2.studentsCount FROM StudyGroupEntity st2 WHERE st2.id = :fromId
+    ) WHERE st1.id = :toId
+""")
+    void copyStudentsFromGroup(Long fromId, Long toId);
+
+    @Modifying
+    @Query("""
+    UPDATE StudyGroupEntity st SET st.studentsCount = 0 WHERE st.id = :fromId
+""")
+    void deleteStudentsFromGroup(Long fromId);
 }
