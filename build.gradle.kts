@@ -21,7 +21,7 @@ repositories {
 dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
-    implementation("org.springframework.boot:spring-boot-starter-web") // Добавлено
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.liquibase:liquibase-core")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -34,8 +34,12 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
     implementation("org.springframework:spring-tx:6.2.10")
     implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
-    implementation("javax.validation:validation-api:2.0.1.Final")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework:spring-messaging:6.2.11")
+    implementation("io.jsonwebtoken:jjwt:0.2")
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.5.6")
 }
 
 tasks.withType<Test> {

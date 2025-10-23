@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.example.study_group_service.models.dto.incomming.Coordinates;
 
-import javax.validation.constraints.Max;
+import jakarta.validation.constraints.Max;
 
 @Entity
 @Table(name = "coordinates")

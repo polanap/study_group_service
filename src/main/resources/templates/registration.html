@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column; /* Добавлено для вертикального расположения элементов */
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Задаем фиксированную ширину формы */
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: calc(100% - 20px); /* Ширина полей ввода с учетом отступа */
+            box-sizing: border-box; /* Учитываем отступы при расчете ширины */
+        }
+        button {
+            padding: 10px;
+            border: none;
+            background: #5cb85c;
+            color: white;
+            cursor: pointer;
+            width: 100%; /* Кнопка занимает всю ширину формы */
+        }
+        button:hover {
+            background: #4cae4c;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Register</h1>
+<form id="registrationForm">
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+    <button type="submit">Register</button>
+    <div class="error" id="errorMessage" style="display:none;"></div>
+</form>
+
+<script>
+    document.getElementById('registrationForm').onsubmit = async function(event) {
+        event.preventDefault(); // Предотвращаем стандартное поведение формы
+
+        const formData = new FormData(this);
+        const data = {
+            username: formData.get('username'),
+            password: formData.get('password'),
+            confirmPassword: formData.get('confirmPassword')
+        };
+
+        try {
+            const response = await fetch('/api/registration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const loginData = {
+                    username: data.username,
+                    password: data.password
+                };
+
+                const loginResponse = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                if (loginResponse.ok) {
+                    window.location.href = '/people'; // Перенаправление на главную страницу после успешного входа
+                } else {
+                    const errorText = await loginResponse.text();
+                    document.getElementById('errorMessage').textContent = errorText;
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } else {
+                const errorText = await response.text();
+                document.getElementById('errorMessage').textContent = errorText;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            document.getElementById('errorMessage').textContent = 'Ошибка при регистрации. Попробуйте еще раз.';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    };
+</script>
+
+
+</body>
+</html>

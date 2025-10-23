@@ -4,6 +4,7 @@ import org.example.study_group_service.models.dto.incomming.Person;
 import org.example.study_group_service.models.entity.PersonEntity;
 import org.example.study_group_service.models.SortOrder;
 import org.example.study_group_service.service.PersonService;
+import org.example.study_group_service.service.handler.PersonWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 import java.util.Objects;
 
 import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
@@ -21,6 +24,9 @@ import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
 public class PersonWebController {
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private PersonWebSocketHandler personWebSocketHandler;
 
     @GetMapping
     public String viewPeople(Model model,
@@ -78,14 +84,16 @@ public class PersonWebController {
     }
 
     @PostMapping
-    public String savePerson(@ModelAttribute Person person) {
+    public String savePerson(@Valid @ModelAttribute Person person) {
         personService.save(person);
+        personWebSocketHandler.sendPeopleUpdate();
         return "redirect:/people";
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
         personService.deleteById(id);
+        personWebSocketHandler.sendPeopleUpdate();
         return ResponseEntity.noContent().build();
     }
 }

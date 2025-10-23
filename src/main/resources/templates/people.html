@@ -3,6 +3,8 @@
 <head>
     <title>People List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
     <style>
         /* Basic Reset */
         * {
@@ -333,24 +335,21 @@
 </div>
 
 <script>
-    var modal = document.getElementById("myModal");
+    var stompClient = null;
 
-    var btn = document.getElementById("addPersonBtn");
-
-    var span = document.getElementsByClassName("close")[0];
-
-    btn.onclick = function() {
-        modal.style.display = "block";
+    function connect() {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/people', function (response) {
+                loadPeople(); // Загружаем людей после обновления
+            });
+        });
     }
 
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+    function loadPeople() {
+        window.location.reload()
     }
 
     function deletePerson(id) {
@@ -363,7 +362,9 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        window.location.reload(); // Перезагрузить страницу после успешного удаления
+                        alert('Успешно удалено!');
+                        // После удаления загружаем людей заново
+                        loadPeople();
                     } else {
                         alert('Произошла ошибка при удалении.');
                     }
@@ -375,6 +376,52 @@
         }
     }
 
+    function addPerson() {
+        var form = document.getElementById("addPersonForm");
+        var personData = {
+            name: form.name.value,
+            eyeColor: form.eyeColor.value,
+            hairColor: form.hairColor.value,
+            nationality: form.nationality.value
+        };
+
+        fetch('/people', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(personData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    form.reset(); // Сбрасываем форму
+                    alert('Человек добавлен!');
+                    loadPeople(); // Загружаем людей заново
+                } else {
+                    alert('Ошибка при добавлении человека.');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при добавлении.');
+            });
+    }
+
+    document.getElementById("addPersonBtn").onclick = function() {
+        document.getElementById("myModal").style.display = "block";
+    };
+
+    document.getElementsByClassName("close")[0].onclick = function() {
+        document.getElementById("myModal").style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("myModal")) {
+            document.getElementById("myModal").style.display = "none";
+        }
+    };
+
+    window.onload = connect;
 </script>
 
 </body>

@@ -6,7 +6,7 @@ import org.example.study_group_service.models.FormOfEducation;
 import org.example.study_group_service.models.Semester;
 import org.example.study_group_service.models.dto.incomming.StudyGroup;
 
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

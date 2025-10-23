@@ -4,7 +4,7 @@ import lombok.Data;
 import org.example.study_group_service.models.FormOfEducation;
 import org.example.study_group_service.models.Semester;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 
 @Data
 public class StudyGroup {
