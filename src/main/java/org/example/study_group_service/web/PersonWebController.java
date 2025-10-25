@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
 
 @Controller
-@RequestMapping("/people")
+@RequestMapping("api/people")
 public class PersonWebController {
     @Autowired
     private PersonService personService;

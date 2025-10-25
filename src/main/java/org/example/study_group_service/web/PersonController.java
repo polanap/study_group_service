@@ -1,9 +1,11 @@
 package org.example.study_group_service.web;
 
+import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.models.SortOrder;
 import org.example.study_group_service.models.dto.incomming.Person;
 import org.example.study_group_service.models.entity.PersonEntity;
 import org.example.study_group_service.service.PersonService;
+import org.example.study_group_service.service.handler.PersonWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,19 +17,23 @@ import java.util.Objects;
 import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("api/person")
+@RequiredArgsConstructor
 public class PersonController {
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
+    private final PersonWebSocketHandler personWebSocketHandler;
 
     @DeleteMapping
     public void deleteById(@RequestParam Long id){
         personService.deleteById(id);
+        personWebSocketHandler.sendPeopleUpdate();
     }
 
     @PostMapping
     public void save(@RequestBody Person person){
         personService.save(person);
+        personWebSocketHandler.sendPeopleUpdate();
+
     }
 
     @GetMapping("/{id}")
@@ -35,7 +41,7 @@ public class PersonController {
         return personService.findById(id);
     }
 
-    @GetMapping("/filtered")
+    @GetMapping
     public Page<PersonEntity> getAllFiltered(
             @RequestParam(required=false) String name,
             @RequestParam(required=false) String eyeColor,

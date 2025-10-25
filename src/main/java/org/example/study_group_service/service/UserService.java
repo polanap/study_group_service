@@ -1,13 +1,7 @@
 package org.example.study_group_service.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import lombok.Getter;
-import org.apache.tomcat.websocket.AuthenticationException;
-import org.example.study_group_service.exceptions.AuthenticationFailureException;
-import org.example.study_group_service.models.dto.incomming.UserLogin;
+import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.models.dto.outcomming.PageDTO;
 import org.example.study_group_service.models.dto.outcomming.UserDTO;
 import org.example.study_group_service.models.dto.incomming.UserRegistration;
@@ -17,8 +11,6 @@ import org.example.study_group_service.repository.RoleRepository;
 import org.example.study_group_service.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,70 +20,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
-
-//    @Value("${jwt.expiration}")
-    private long EXPIRATION_TIME = 864_000_000;
-
-    Logger log = LoggerFactory.getLogger(UserService.class);
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Getter
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-
-    public String authenticate(UserLogin credentials) {
-        log.info("authenticate");
-        if (validateUser(credentials)) {
-            log.info("after validate");
-            return generateToken(credentials.getUsername());
-        } else {
-            throw new AuthenticationFailureException("Неверные учетные данные");
-        }
-    }
-
-    private boolean validateUser(UserLogin credentials) {
-        log.info(credentials.getUsername() + " " + credentials.getPassword());
-        try {
-            var user = findByUsername(credentials.getUsername());
-            return user.getUsername().equals(credentials.getUsername()) &&
-                    equalPasswords(user, credentials.getPassword());
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .compact();
-    }
-
-    public String validateToken(String token) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
-        } catch (SignatureException e) {
-            throw new RuntimeException("Invalid token");
-        }
-    }
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    Logger log = LoggerFactory.getLogger(UserService.class);
 
     public PageDTO<UserDTO> getAllUsersPaginated(PageRequest pageRequest) {
         var page = userRepository.findAll(pageRequest);

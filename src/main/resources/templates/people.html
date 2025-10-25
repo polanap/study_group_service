@@ -208,7 +208,7 @@
 <h1>People List</h1>
 
 <!-- Filter Form -->
-<form th:action="@{/people}" method="get">
+<form th:action="@{/api/people}" method="get">
     <input type="text" name="name" placeholder="Name" th:value="${filterName}" />
     <input type="text" name="eyeColor" placeholder="Eye Color" th:value="${filterEyeColor}" />
     <input type="text" name="hairColor" placeholder="Hair Color" th:value="${filterHairColor}" />
@@ -216,7 +216,7 @@
     <button type="submit">Filter</button>
 </form>
 
-<form th:action="@{/people}" method="get">
+<form th:action="@{/api/people}" method="get">
     <!-- Sort By Options -->
     <select name="byName">
         <option value="">Sort by Name</option>
@@ -293,7 +293,7 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2>Add New Person</h2>
-        <form id="addPersonForm" th:action="@{/people}" method="post">
+        <form id="addPersonForm" th:action="@{/api/people}" method="post">
             <div>
                 <label>Name:</label>
                 <input type="text" name="name" placeholder="Name" required />
@@ -335,6 +335,25 @@
 </div>
 
 <script>
+    const originalFetch = window.fetch;
+
+    window.fetch = function(...args) {
+        let [url, config = {}] = args;
+        const token = localStorage.getItem("token");
+
+        // Проверяем, существует ли токен и является ли запрос к API
+        // (по желанию, можно добавить проверку, чтобы не отправлять токен
+        // на сторонние ресурсы).
+        if (token) {
+            config.headers = {
+                ...config.headers,
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        return originalFetch(url, config);
+    };
+
     var stompClient = null;
 
     function connect() {
@@ -354,7 +373,7 @@
 
     function deletePerson(id) {
         if (confirm('Вы уверены, что хотите удалить этого человека?')) {
-            fetch(`/people/${id}`, {
+            fetch(`/api/people/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -385,7 +404,7 @@
             nationality: form.nationality.value
         };
 
-        fetch('/people', {
+        fetch('/api/people', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

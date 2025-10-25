@@ -1,6 +1,8 @@
 package org.example.study_group_service.web;
 
+import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.models.dto.incomming.UserRegistration;
+import org.example.study_group_service.service.AuthenticationService;
 import org.example.study_group_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -15,14 +17,14 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/registration")
 @Validated
+@RequiredArgsConstructor
 public class RegistrationController {
-
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping
-    public void addUser(@Valid @RequestBody UserRegistration request) {
-        userService.save(request);
+    public String addUser(@Valid @RequestBody UserRegistration request) {
+        return authenticationService.signUp(request);
     }
 
 }

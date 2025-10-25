@@ -56,6 +56,26 @@
 </form>
 
 <script>
+
+    const originalFetch = window.fetch;
+
+    window.fetch = function(...args) {
+        let [url, config = {}] = args;
+        const token = localStorage.getItem("token");
+
+        // Проверяем, существует ли токен и является ли запрос к API
+        // (по желанию, можно добавить проверку, чтобы не отправлять токен
+        // на сторонние ресурсы).
+        if (token) {
+            config.headers = {
+                ...config.headers,
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        return originalFetch(url, config);
+    };
+
     document.getElementById('registrationForm').onsubmit = async function(event) {
         event.preventDefault(); // Предотвращаем стандартное поведение формы
 
@@ -76,26 +96,9 @@
             });
 
             if (response.ok) {
-                const loginData = {
-                    username: data.username,
-                    password: data.password
-                };
-
-                const loginResponse = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(loginData)
-                });
-
-                if (loginResponse.ok) {
-                    window.location.href = '/people'; // Перенаправление на главную страницу после успешного входа
-                } else {
-                    const errorText = await loginResponse.text();
-                    document.getElementById('errorMessage').textContent = errorText;
-                    document.getElementById('errorMessage').style.display = 'block';
-                }
+                const token = await response.text(); // Получаем токен
+                localStorage.setItem("token", token); // Сохраняем токен в локальном хранилище
+                window.location.href = '/people'; // Перенаправляем
             } else {
                 const errorText = await response.text();
                 document.getElementById('errorMessage').textContent = errorText;

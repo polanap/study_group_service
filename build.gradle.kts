@@ -38,8 +38,11 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework:spring-messaging:6.2.11")
-    implementation("io.jsonwebtoken:jjwt:0.2")
     implementation("org.springframework.boot:spring-boot-starter-validation:3.5.6")
+
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
 }
 
 tasks.withType<Test> {

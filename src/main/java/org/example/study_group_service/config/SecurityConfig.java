@@ -1,113 +1,63 @@
 package org.example.study_group_service.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.example.study_group_service.exceptions.AuthenticationFailureException;
+import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.http.HttpStatus;
 
-import java.io.IOException;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-
-    @Autowired
-    UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserService userService;
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .addFilterBefore(new BearerTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // Добавляем свой фильтр аутентификации
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers("/login", "/registration", "/api/login", "/api/registration") // Разрешаем доступ к этим страницам
-                                .permitAll()
+                                .requestMatchers("/css/registration.css", "/js/registration.js").permitAll()
+                                .requestMatchers("/login", "/registration", "/api/login", "/api/registration").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .formLogin(configurer ->
-                        configurer
-                                .loginPage("/login")
-                                .successHandler(successHandler())
-                                .failureHandler(failureHandler())
-                );
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+
         return httpSecurity.build();
     }
 
-    @Autowired
-    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(userService.getEncoder());
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userService);
+        authProvider.setPasswordEncoder(userService.getEncoder());
+        return authProvider;
     }
 
-    private AuthenticationSuccessHandler successHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-                response.getWriter().append("OK");
-                response.setStatus(200);
-            }
-        };
-    }
-
-    private AuthenticationFailureHandler failureHandler() {
-        return new AuthenticationFailureHandler() {
-            @Override
-            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
-                response.getWriter().append("Authentication failure: " + e.getMessage());
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            }
-        };
-    }
-
-    public class BearerTokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-        public BearerTokenAuthenticationFilter() {
-            super(new RequestMatcher() {
-                @Override
-                public boolean matches(HttpServletRequest request) {
-                    return "POST".equalsIgnoreCase(request.getMethod())
-                            && request.getRequestURI().equals("api/login");
-                }
-            });
-        }
-
-        @Override
-        public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-                throws AuthenticationException {
-            String token = request.getHeader("Authorization");
-            if (token != null && token.startsWith("Bearer ")) {
-                String jwt = token.substring(7); // Убираем "Bearer " из токена
-                return authenticateToken(jwt);
-            }
-            throw new AuthenticationFailureException("Token is missing or invalid");
-        }
-
-        private Authentication authenticateToken(String token) {
-            String username = userService.validateToken(token);
-            if (username != null) {
-                UserDetails userDetails = userService.loadUserByUsername(username);
-                BearerAuthenticationToken authToken = new BearerAuthenticationToken(userDetails, token);
-                authToken.setAuthenticated(true); // Устанавливаем аутентифицированным
-                return authToken;
-            }
-            throw new AuthenticationFailureException("Invalid token");
-        }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
     }
 }
-
