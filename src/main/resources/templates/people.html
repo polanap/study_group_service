@@ -1,205 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="utf-8" />
     <title>People List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
     <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            line-height: 1.6;
-        }
-
-        /* Header */
-        h1 {
-            text-align: center;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        /* Form Styles */
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        input[type="text"],
-        select {
-            padding: 10px;
-            margin: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 200px;
-        }
-
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            background-color: #5cb85c;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #4cae4c;
-        }
-
-        /* Table Styles */
-        table {
-            width: 100%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #5cb85c;
-            color: white;
-        }
-
-        /* Pagination Styles */
-        div {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        a {
-            text-decoration: none;
-            color: #5cb85c;
-            margin: 0 10px;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Error Message Styles */
-        .error-message {
-            color: red;
-            margin-top: 5px;
-        }
-
-        /* Addition of New Person Form */
-        h2 {
-            text-align: center;
-            color: #333;
-            margin: 20px 0;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            form {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            input[type="text"],
-            select {
-                width: 100%;
-                margin: 5px 0;
-            }
-
-            button {
-                width: 100%;
-            }
-        }
-        /* Basic styles for the modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Basic styles for the modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
+        table { width:100%; border-collapse: collapse; }
+        th,td { border:1px solid #ddd; padding:8px; }
+        th { background:#f4f4f4; }
+        .controls { margin-bottom:1rem; display:flex; gap:8px; flex-wrap:wrap; }
     </style>
 </head>
 <body>
-
-<!-- Navigation Menu -->
 <nav>
     <a href="/content-groups">Content Groups</a>
     <a href="/locations">Locations</a>
@@ -207,42 +21,23 @@
 
 <h1>People List</h1>
 
-<!-- Filter Form -->
-<form th:action="@{/api/people}" method="get">
-    <input type="text" name="name" placeholder="Name" th:value="${filterName}" />
-    <input type="text" name="eyeColor" placeholder="Eye Color" th:value="${filterEyeColor}" />
-    <input type="text" name="hairColor" placeholder="Hair Color" th:value="${filterHairColor}" />
-    <input type="text" name="nationality" placeholder="Nationality" th:value="${filterNationality}" />
-    <button type="submit">Filter</button>
-</form>
+<div class="controls">
+    <input id="filterName" placeholder="Name" />
+    <input id="filterEyeColor" placeholder="Eye Color" />
+    <input id="filterHairColor" placeholder="Hair Color" />
+    <input id="filterNationality" placeholder="Nationality" />
 
-<form th:action="@{/api/people}" method="get">
-    <!-- Sort By Options -->
-    <select name="byName">
-        <option value="">Sort by Name</option>
-        <option value="ASC" th:selected="${byName == 'ASC'}">Ascending</option>
-        <option value="DESC" th:selected="${byName == 'DESC'}">Descending</option>
-    </select>
-    <select name="byEyeColor">
-        <option value="">Sort by Eye Color</option>
-        <option value="ASC" th:selected="${byEyeColor == 'ASC'}">Ascending</option>
-        <option value="DESC" th:selected="${byEyeColor == 'DESC'}">Descending</option>
-    </select>
-    <select name="byHairColor">
-        <option value="">Sort by Hair Color</option>
-        <option value="ASC" th:selected="${byHairColor == 'ASC'}">Ascending</option>
-        <option value="DESC" th:selected="${byHairColor == 'DESC'}">Descending</option>
-    </select>
-    <select name="byNationality">
-        <option value="">Sort by Nationality</option>
-        <option value="ASC" th:selected="${byNationality == 'ASC'}">Ascending</option>
-        <option value="DESC" th:selected="${byNationality == 'DESC'}">Descending</option>
-    </select>
+    <select id="byName"><option value="">Name</option><option value="ASC">Name ↑</option><option value="DESC">Name ↓</option></select>
+    <select id="byEyeColor"><option value="">Eye</option><option value="ASC">Eye ↑</option><option value="DESC">Eye ↓</option></select>
+    <select id="byHairColor"><option value="">Hair</option><option value="ASC">Hair ↑</option><option value="DESC">Hair ↓</option></select>
+    <select id="byNationality"><option value="">Nation</option><option value="ASC">Nation ↑</option><option value="DESC">Nation ↓</option></select>
 
-    <button type="submit">Filter</button>
-</form>
+    <button id="apply">Apply</button>
+    <button id="clear">Clear</button>
 
-<!-- Table for displaying persons -->
+    <button id="openAdd">Add New Person</button>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -253,196 +48,199 @@
         <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
-    <tr th:each="person : ${people.content}">
-        <td th:text="${person.name}"></td>
-        <td th:text="${person.eyeColor}"></td>
-        <td th:text="${person.hairColor}"></td>
-        <td th:text="${person.nationality}"></td>
-        <td>
-<!--            <a th:href="@{/people/{id}(id=${person.id})}">Update</a>-->
-            <button th:type="button" th:onclick="'deletePerson(' + ${person.id} + ')'" >Delete</button>
-            <!--            <a href="#" onclick="deletePerson(${person.id}); return false;">Delete</a>-->
-        </td>
-    </tr>
-
-    <!-- Сообщение об отсутствии результатов -->
-    <tr th:if="${noResults}">
-        <td colspan="5" style="text-align:center;">
-            <strong>Результатов не найдено.</strong>
-        </td>
-    </tr>
+    <tbody id="peopleBody">
+    <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
     </tbody>
 </table>
 
-<!-- Pagination -->
-<div>
-    <span th:if="${currentPage > 0}">
-        <a th:href="@{/people(page=${currentPage - 1}, size=${people.size})}">Previous</a>
-    </span>
-    <span th:if="${currentPage < totalPages - 1}">
-        <a th:href="@{/people(page=${currentPage + 1}, size=${people.size})}">Next</a>
-    </span>
-</div>
+<div id="pagination" style="margin-top:12px;"></div>
 
-<!-- Button to Open the Modal -->
-<button id="addPersonBtn">Add New Person</button>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Add New Person</h2>
-        <form id="addPersonForm" th:action="@{/api/people}" method="post">
-            <div>
-                <label>Name:</label>
-                <input type="text" name="name" placeholder="Name" required />
-                <div class="error-message" id="nameError" style="color: red; display: none;"></div>
-            </div>
-            <div>
-                <label>Eye Color:</label>
-                <select name="eyeColor" required>
-                    <option value="GREEN">Green</option>
-                    <option value="RED">Brown</option>
-                    <option value="BLUE">Blue</option>
-                    <option value="YELLOW">Gray</option>
-                </select>
-                <div class="error-message" id="eyeColorError" style="color: red; display: none;"></div>
-            </div>
-            <div>
-                <label>Hair Color:</label>
-                <select name="hairColor" required>
-                    <option value="GREEN">Green</option>
-                    <option value="RED">Brown</option>
-                    <option value="BLUE">Blond</option>
-                    <option value="YELLOW">Gray</option>
-                </select>
-                <div class="error-message" id="hairColorError" style="color: red; display: none;"></div>
-            </div>
-            <div>
-                <label>Nationality:</label>
-                <select name="nationality" required>
-                    <option value="RUSSIA">Russia</option>
-                    <option value="UNITED_KINGDOM">UK</option>
-                    <option value="CHINA">China</option>
-                    <option value="INDIA">India</option>
-                </select>
-                <div class="error-message" id="nationalityError" style="color: red; display: none;"></div>
-            </div>
-            <button type="submit">Add Person</button>
-        </form>
+<!-- Add modal (simple) -->
+<div id="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4);">
+    <div style="background:#fff; margin:6% auto; padding:16px; width:320px; position:relative;">
+        <button id="closeAdd" style="position:absolute; right:8px; top:8px;">×</button>
+        <h3>Add Person</h3>
+        <div><input id="addName" placeholder="Name" required /></div>
+        <div>
+            <select id="addEyeColor">
+                <option>GREEN</option><option>RED</option><option>BLUE</option><option>YELLOW</option>
+            </select>
+        </div>
+        <div>
+            <select id="addHairColor">
+                <option>GREEN</option><option>RED</option><option>BLUE</option><option>YELLOW</option>
+            </select>
+        </div>
+        <div>
+            <select id="addNationality">
+                <option>RUSSIA</option><option>UNITED_KINGDOM</option><option>CHINA</option><option>INDIA</option>
+            </select>
+        </div>
+        <div style="margin-top:8px;"><button id="saveAdd">Save</button></div>
     </div>
 </div>
 
 <script>
-    const originalFetch = window.fetch;
+    const apiBase = '/api/person';
+    let currentPage = 0;
+    let pageSize = 10;
+    let totalPages = 0;
 
-    window.fetch = function(...args) {
-        let [url, config = {}] = args;
-        const token = localStorage.getItem("token");
+    function getTokenHeader() {
+        const token = localStorage.getItem('token');
+        return token ? { 'Authorization': 'Bearer ' + token } : {};
+    }
 
-        // Проверяем, существует ли токен и является ли запрос к API
-        // (по желанию, можно добавить проверку, чтобы не отправлять токен
-        // на сторонние ресурсы).
-        if (token) {
-            config.headers = {
-                ...config.headers,
-                'Authorization': `Bearer ${token}`
-            };
+    function buildQuery(params) {
+        const esc = encodeURIComponent;
+        return Object.entries(params)
+            .filter(([,v]) => v !== undefined && v !== '' && v !== null)
+            .map(([k,v]) => esc(k) + '=' + esc(v))
+            .join('&');
+    }
+
+    async function loadPeople(page = 0) {
+        const params = {
+            name: document.getElementById('filterName').value,
+            eyeColor: document.getElementById('filterEyeColor').value,
+            hairColor: document.getElementById('filterHairColor').value,
+            nationality: document.getElementById('filterNationality').value,
+            byName: document.getElementById('byName').value || undefined,
+            byEyeColor: document.getElementById('byEyeColor').value || undefined,
+            byHairColor: document.getElementById('byHairColor').value || undefined,
+            byNationality: document.getElementById('byNationality').value || undefined,
+            page: page,
+            size: pageSize
+        };
+        const q = buildQuery(params);
+        const res = await fetch(apiBase + (q ? '?' + q : ''), { headers: { 'Content-Type':'application/json', ...getTokenHeader() } });
+        if (res.status === 401 || res.status === 403) {
+            // not authorized — redirect to login
+            window.location.href = '/login';
+            return;
         }
+        if (!res.ok) {
+            document.getElementById('peopleBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:red;">Error loading data</td></tr>';
+            return;
+        }
+        const pageData = await res.json();
+        renderTable(pageData);
+    }
 
-        return originalFetch(url, config);
-    };
-
-    var stompClient = null;
-
-    function connect() {
-        var socket = new SockJS('/ws');
-        stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/people', function (response) {
-                loadPeople(); // Загружаем людей после обновления
+    function renderTable(pageData) {
+        const body = document.getElementById('peopleBody');
+        body.innerHTML = '';
+        if (!pageData || !pageData.content || pageData.content.length === 0) {
+            body.innerHTML = '<tr><td colspan="5" style="text-align:center;"><strong>Результатов не найдено.</strong></td></tr>';
+        } else {
+            pageData.content.forEach(person => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${escapeHtml(person.name || '')}</td>
+          <td>${escapeHtml(person.eyeColor || '')}</td>
+          <td>${escapeHtml(person.hairColor || '')}</td>
+          <td>${escapeHtml(person.nationality || '')}</td>
+          <td>
+            <button data-id="${person.id}" class="deleteBtn">Delete</button>
+          </td>
+        `;
+                body.appendChild(tr);
             });
+        }
+        currentPage = pageData.number || 0;
+        totalPages = pageData.totalPages || 0;
+        renderPagination();
+        attachDeleteHandlers();
+    }
+
+    function renderPagination() {
+        const p = document.getElementById('pagination');
+        p.innerHTML = '';
+        if (totalPages <= 1) return;
+        if (currentPage > 0) {
+            const prev = document.createElement('button');
+            prev.textContent = 'Previous';
+            prev.onclick = () => loadPeople(currentPage - 1);
+            p.appendChild(prev);
+        }
+        const info = document.createElement('span');
+        info.textContent = ` Page ${currentPage + 1} of ${totalPages} `;
+        p.appendChild(info);
+        if (currentPage < totalPages - 1) {
+            const next = document.createElement('button');
+            next.textContent = 'Next';
+            next.onclick = () => loadPeople(currentPage + 1);
+            p.appendChild(next);
+        }
+    }
+
+    function attachDeleteHandlers() {
+        document.querySelectorAll('.deleteBtn').forEach(btn => {
+            btn.onclick = async () => {
+                const id = btn.getAttribute('data-id');
+                if (!confirm('Delete person?')) return;
+                const res = await fetch(apiBase + '?id=' + encodeURIComponent(id), {
+                    method: 'DELETE',
+                    headers: { 'Content-Type':'application/json', ...getTokenHeader() }
+                });
+                if (res.status === 401 || res.status === 403) { window.location.href = '/login'; return; }
+                if (res.ok) { loadPeople(currentPage); }
+                else alert('Delete failed');
+            };
         });
     }
 
-    function loadPeople() {
-        window.location.reload()
-    }
+    document.getElementById('apply').onclick = () => loadPeople(0);
+    document.getElementById('clear').onclick = () => {
+        ['filterName','filterEyeColor','filterHairColor','filterNationality'].forEach(id => document.getElementById(id).value = '');
+        ['byName','byEyeColor','byHairColor','byNationality'].forEach(id => document.getElementById(id).value = '');
+        loadPeople(0);
+    };
 
-    function deletePerson(id) {
-        if (confirm('Вы уверены, что хотите удалить этого человека?')) {
-            fetch(`/api/people/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Успешно удалено!');
-                        // После удаления загружаем людей заново
-                        loadPeople();
-                    } else {
-                        alert('Произошла ошибка при удалении.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error);
-                    alert('Произошла ошибка при удалении.');
-                });
-        }
-    }
-
-    function addPerson() {
-        var form = document.getElementById("addPersonForm");
-        var personData = {
-            name: form.name.value,
-            eyeColor: form.eyeColor.value,
-            hairColor: form.hairColor.value,
-            nationality: form.nationality.value
+    // Add person
+    document.getElementById('openAdd').onclick = () => document.getElementById('modal').style.display = 'block';
+    document.getElementById('closeAdd').onclick = () => document.getElementById('modal').style.display = 'none';
+    document.getElementById('saveAdd').onclick = async () => {
+        const payload = {
+            name: document.getElementById('addName').value,
+            eyeColor: document.getElementById('addEyeColor').value,
+            hairColor: document.getElementById('addHairColor').value,
+            nationality: document.getElementById('addNationality').value
         };
-
-        fetch('/api/people', {
+        const res = await fetch(apiBase, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(personData)
-        })
-            .then(response => {
-                if (response.ok) {
-                    form.reset(); // Сбрасываем форму
-                    alert('Человек добавлен!');
-                    loadPeople(); // Загружаем людей заново
-                } else {
-                    alert('Ошибка при добавлении человека.');
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка при добавлении.');
-            });
+            headers: { 'Content-Type':'application/json', ...getTokenHeader() },
+            body: JSON.stringify(payload)
+        });
+        if (res.status === 401 || res.status === 403) { window.location.href = '/login'; return; }
+        if (res.ok) { document.getElementById('modal').style.display = 'none'; loadPeople(currentPage); }
+        else alert('Save failed');
+    };
+
+    // WebSocket to refresh list
+    let stompClient = null;
+    function connectWs() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            stompClient.subscribe('/topic/people', function() { loadPeople(currentPage); });
+        }, function(err){ console.log('WS error', err); });
     }
 
-    document.getElementById("addPersonBtn").onclick = function() {
-        document.getElementById("myModal").style.display = "block";
-    };
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
 
-    document.getElementsByClassName("close")[0].onclick = function() {
-        document.getElementById("myModal").style.display = "none";
-    };
+    // attach global fetch wrapper to include token for non-GET forms if needed
+    (function(){
+        const orig = window.fetch;
+        window.fetch = function(url, opts = {}) {
+            opts.headers = { ...(opts.headers || {}), ...getTokenHeader() };
+            return orig(url, opts);
+        };
+    })();
 
-    window.onclick = function(event) {
-        if (event.target == document.getElementById("myModal")) {
-            document.getElementById("myModal").style.display = "none";
-        }
-    };
-
-    window.onload = connect;
+    // initial load
+    connectWs();
+    loadPeople(0);
 </script>
-
 </body>
 </html>
-

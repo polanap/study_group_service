@@ -1,188 +1,81 @@
-/* Basic Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Reset */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    background:#f5f7fb;color:#263238;line-height:1.5;
+    padding:24px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    line-height: 1.6;
+/* Layout */
+.container{max-width:1100px;margin:0 auto}
+nav{display:flex;gap:12px;margin-bottom:18px}
+nav a{color:#2f80ed;text-decoration:none;font-weight:600}
+nav a:hover{text-decoration:underline}
+
+/* Title */
+h1{font-size:1.6rem;color:#102027;text-align:center;margin:8px 0 20px}
+
+/* Controls */
+.controls{
+    display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:18px;
+    background:#fff;padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(16,32,40,0.06);
+}
+.controls input[type="text"],
+.controls select{
+    padding:10px 12px;border:1px solid #e0e6ee;border-radius:8px;background:#fff;
+    min-width:160px;outline:none;
+}
+.controls input[type="text"]:focus,
+.controls select:focus{border-color:#7aa7ff;box-shadow:0 0 0 3px rgba(47,128,237,0.08)}
+.controls button{
+    padding:10px 14px;border-radius:8px;border:none;background:#2f80ed;color:#fff;
+    cursor:pointer;font-weight:600;box-shadow:0 6px 12px rgba(47,128,237,0.12);
+}
+.controls button.secondary{background:#6c757d}
+.controls button:active{transform:translateY(1px)}
+
+/* Table */
+.table-wrap{overflow:auto;background:#fff;border-radius:10px;padding:8px;box-shadow:0 6px 18px rgba(16,32,40,0.06)}
+table{width:100%;border-collapse:collapse;font-size:0.95rem}
+th,td{padding:12px 10px;border-bottom:1px solid #eef2f6;text-align:left;vertical-align:middle}
+th{
+    background:linear-gradient(180deg,#2f80ed,#1f6fdc);color:#fff;font-weight:700;border-bottom:2px solid rgba(0,0,0,0.06);
+}
+tr:hover td{background:#fbfdff}
+td:last-child{width:140px}
+
+/* Buttons in rows */
+.btn{
+    display:inline-block;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:600;
+}
+.btn.delete{background:#ef5350;color:#fff;margin-left:6px}
+.btn.small{padding:6px 8px;font-size:.85rem}
+
+/* Empty / error */
+.empty-row td{text-align:center;color:#607d8b;padding:28px}
+
+/* Pagination */
+#pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px}
+#pagination button{
+    background:#fff;border:1px solid #e6eef8;padding:8px 12px;border-radius:8px;cursor:pointer;
+}
+#pagination button:disabled{opacity:.5;cursor:default}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(3,18,26,0.5);z-index:60;align-items:center;justify-content:center}
+.modal .modal-content{
+    background:#fff;padding:18px;border-radius:12px;width:min(420px,94%);box-shadow:0 20px 50px rgba(2,6,23,0.35)
+}
+.modal .close{float:right;background:transparent;border:none;font-size:20px;cursor:pointer;color:#607d8b}
+
+/* Form inside modal */
+.modal .modal-content input,
+.modal .modal-content select{
+    width:100%;padding:10px;border:1px solid #e6eef8;border-radius:8px;margin-top:8px;
 }
 
-/* Header */
-h1 {
-    text-align: center;
-    color: #333;
-    margin: 20px 0;
-}
-
-/* Form Styles */
-form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-input[type="text"],
-select {
-    padding: 10px;
-    margin: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 200px;
-}
-
-button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    background-color: #5cb85c;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background-color: #4cae4c;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-th {
-    background-color: #5cb85c;
-    color: white;
-}
-
-/* Pagination Styles */
-div {
-    text-align: center;
-    margin: 20px 0;
-}
-
-a {
-    text-decoration: none;
-    color: #5cb85c;
-    margin: 0 10px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Error Message Styles */
-.error-message {
-    color: red;
-    margin-top: 5px;
-}
-
-/* Addition of New Person Form */
-h2 {
-    text-align: center;
-    color: #333;
-    margin: 20px 0;
-}
-
-/* Responsive Styles */
-@media (max-width: 600px) {
-    form {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    input[type="text"],
-    select {
-        width: 100%;
-        margin: 5px 0;
-    }
-
-    button {
-        width: 100%;
-    }
-}
-/* Basic styles for the modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-     /* Basic styles for the modal */
- .modal {
-     display: none;
-     position: fixed;
-     z-index: 1;
-     left: 0;
-     top: 0;
-     width: 100%;
-     height: 100%;
-     overflow: auto;
-     background-color: rgb(0,0,0);
-     background-color: rgba(0,0,0,0.4);
-     padding-top: 60px;
- }
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+/* Responsive */
+@media (max-width:720px){
+    .controls{flex-direction:column;align-items:stretch}
+    td:last-child{width:auto}
 }

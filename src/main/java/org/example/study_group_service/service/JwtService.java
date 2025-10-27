@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.example.study_group_service.config.PropertyLoader;
 import org.example.study_group_service.models.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,11 +19,11 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String jwtSigningKey;
 
-    @Value("${jwt.expiration}")
-    private long expirationTime;
+    PropertyLoader pl = new PropertyLoader("application.properties");
+    String jwtSigningKey = pl.get("jwt.secret");
+    long expirationTime = pl.getLong("jwt.expiration", 864000000L);
+
     /**
      * Извлечение имени пользователя из токена
      *
@@ -84,7 +85,7 @@ public class JwtService {
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 

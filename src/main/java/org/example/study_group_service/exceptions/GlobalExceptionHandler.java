@@ -3,6 +3,7 @@ package org.example.study_group_service.exceptions;
 import org.example.study_group_service.models.dto.outcomming.ErrorMessageDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,9 +43,14 @@ public class GlobalExceptionHandler {
     }
 
 
-//    @ExceptionHandler
-//    public ResponseEntity<ErrorMessageDTO> handleOtherException(RuntimeException e){
-//        return ResponseEntity.internalServerError().body( new ErrorMessageDTO("Internal Server Error " + e) );
-//    }
+    @ExceptionHandler
+    public ResponseEntity<ErrorMessageDTO> handleBadCredentialsException(BadCredentialsException e){
+        return ResponseEntity.status(401).body( new ErrorMessageDTO("Bad credentials") );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorMessageDTO> handleOtherException(RuntimeException e){
+        return ResponseEntity.internalServerError().body( new ErrorMessageDTO("Internal Server Error " + e) );
+    }
 }
 

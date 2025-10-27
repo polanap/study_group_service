@@ -43,16 +43,16 @@ public class PersonController {
 
     @GetMapping
     public Page<PersonEntity> getAllFiltered(
-            @RequestParam(required=false) String name,
-            @RequestParam(required=false) String eyeColor,
-            @RequestParam(required=false) String hairColor,
-            @RequestParam(required=false) String nationality,
-            @RequestParam(required=false) SortOrder byName,
-            @RequestParam(required=false) SortOrder byEyeColor,
-            @RequestParam(required=false) SortOrder byHairColor,
-            @RequestParam(required=false) SortOrder byNationality,
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam(name = "name", required = false) String name,
+            @RequestParam(name = "eyeColor", required = false) String eyeColor,
+            @RequestParam(name = "hairColor", required = false) String hairColor,
+            @RequestParam(name = "nationality", required = false) String nationality,
+            @RequestParam(name = "byName", required = false) SortOrder byName,
+            @RequestParam(name = "byEyeColor", required = false) SortOrder byEyeColor,
+            @RequestParam(name = "byHairColor", required = false) SortOrder byHairColor,
+            @RequestParam(name = "byNationality", required = false) SortOrder byNationality,
+            @RequestParam(name = "page") int page,
+            @RequestParam(name = "size") int size
     ) {
         return personService.getAllFiltered(
                 name,

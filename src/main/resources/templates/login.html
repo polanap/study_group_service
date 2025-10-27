@@ -3,46 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        form {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-        input {
-            margin-bottom: 10px;
-            padding: 10px;
-            width: calc(100% - 20px);
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px;
-            border: none;
-            background: #5cb85c;
-            color: white;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background: #4cae4c;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <script th:src="@{/js/login.js}"></script>
 </head>
 <body>
 
@@ -54,74 +16,74 @@
     <div class="error" id="errorMessage" style="display:none;"></div>
 </form>
 
-<script>
-    const originalFetch = window.fetch;
+<!--<script>-->
+<!--    const originalFetch = window.fetch;-->
 
-    window.fetch = function(...args) {
-        let [url, config = {}] = args;
-        const token = localStorage.getItem("token");
+<!--    window.fetch = function(...args) {-->
+<!--        let [url, config = {}] = args;-->
+<!--        const token = localStorage.getItem("token");-->
 
-        // Проверяем, существует ли токен и является ли запрос к API
-        // (по желанию, можно добавить проверку, чтобы не отправлять токен
-        // на сторонние ресурсы).
-        if (token) {
-            config.headers = {
-                ...config.headers,
-                'Authorization': `Bearer ${token}`
-            };
-        }
+<!--        // Проверяем, существует ли токен и является ли запрос к API-->
+<!--        // (по желанию, можно добавить проверку, чтобы не отправлять токен-->
+<!--        // на сторонние ресурсы).-->
+<!--        if (token) {-->
+<!--            config.headers = {-->
+<!--                ...config.headers,-->
+<!--                'Authorization': `Bearer ${token}`-->
+<!--            };-->
+<!--        }-->
 
-        return originalFetch(url, config);
-    };
+<!--        return originalFetch(url, config);-->
+<!--    };-->
 
-    async function redirect(route) {
-        try {
-            const response = await fetch(route);
-            if (response.ok) {
-                const html = await response.text();
-                document.documentElement.innerHTML = html; // Заменяем всё содержимое страницы
-            } else if (response.status === 401) {
-                window.location.href = '/login'; // Если ошибка, перенаправляем на логин
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-        }
-    }
+<!--    async function redirect(route) {-->
+<!--        try {-->
+<!--            const response = await fetch(route);-->
+<!--            if (response.ok) {-->
+<!--                const html = await response.text();-->
+<!--                document.documentElement.innerHTML = html; // Заменяем всё содержимое страницы-->
+<!--            } else if (response.status === 401) {-->
+<!--                window.location.href = '/login'; // Если ошибка, перенаправляем на логин-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Ошибка:', error);-->
+<!--        }-->
+<!--    }-->
 
-    document.getElementById('loginForm').onsubmit = async function(event) {
-        event.preventDefault(); // Предотвращаем стандартное поведение формы
+<!--    document.getElementById('loginForm').onsubmit = async function(event) {-->
+<!--        event.preventDefault(); // Предотвращаем стандартное поведение формы-->
 
-        const formData = new FormData(this);
-        const data = {
-            username: formData.get('username'),
-            password: formData.get('password')
-        };
+<!--        const formData = new FormData(this);-->
+<!--        const data = {-->
+<!--            username: formData.get('username'),-->
+<!--            password: formData.get('password')-->
+<!--        };-->
 
-        try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
+<!--        try {-->
+<!--            const response = await fetch('/api/login', {-->
+<!--                method: 'POST',-->
+<!--                headers: {-->
+<!--                    'Content-Type': 'application/json',-->
+<!--                },-->
+<!--                body: JSON.stringify(data)-->
+<!--            });-->
 
-            if (response.ok) {
-                const token = await response.text(); // Получаем токен
-                localStorage.setItem("token", token); // Сохраняем токен в локальном хранилище
-                await redirect('/api/people'); // Перенаправляем
-            } else {
-                const errorText = await response.text();
-                document.getElementById('errorMessage').textContent = errorText;
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            document.getElementById('errorMessage').textContent = 'Ошибка при входе.';
-            document.getElementById('errorMessage').style.display = 'block';
-        }
-    };
-</script>
+<!--            if (response.ok) {-->
+<!--                const token = await response.text(); // Получаем токен-->
+<!--                localStorage.setItem("token", token); // Сохраняем токен в локальном хранилище-->
+<!--                await redirect('/api/people'); // Перенаправляем-->
+<!--            } else {-->
+<!--                const errorText = await response.text();-->
+<!--                document.getElementById('errorMessage').textContent = errorText;-->
+<!--                document.getElementById('errorMessage').style.display = 'block';-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error('Ошибка:', error);-->
+<!--            document.getElementById('errorMessage').textContent = 'Ошибка при входе.';-->
+<!--            document.getElementById('errorMessage').style.display = 'block';-->
+<!--        }-->
+<!--    };-->
+<!--</script>-->
 
 </body>
 </html>

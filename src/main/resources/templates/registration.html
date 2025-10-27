@@ -2,47 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registration</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column; /* Добавлено для вертикального расположения элементов */
-        }
-        form {
-            background: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px; /* Задаем фиксированную ширину формы */
-        }
-        input {
-            margin-bottom: 10px;
-            padding: 10px;
-            width: calc(100% - 20px); /* Ширина полей ввода с учетом отступа */
-            box-sizing: border-box; /* Учитываем отступы при расчете ширины */
-        }
-        button {
-            padding: 10px;
-            border: none;
-            background: #5cb85c;
-            color: white;
-            cursor: pointer;
-            width: 100%; /* Кнопка занимает всю ширину формы */
-        }
-        button:hover {
-            background: #4cae4c;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/registration.css}" />
+    <script th:src="@{/js/registration.js}"></script>
 </head>
 <body>
 
@@ -54,63 +15,6 @@
     <button type="submit">Register</button>
     <div class="error" id="errorMessage" style="display:none;"></div>
 </form>
-
-<script>
-
-    const originalFetch = window.fetch;
-
-    window.fetch = function(...args) {
-        let [url, config = {}] = args;
-        const token = localStorage.getItem("token");
-
-        // Проверяем, существует ли токен и является ли запрос к API
-        // (по желанию, можно добавить проверку, чтобы не отправлять токен
-        // на сторонние ресурсы).
-        if (token) {
-            config.headers = {
-                ...config.headers,
-                'Authorization': `Bearer ${token}`
-            };
-        }
-
-        return originalFetch(url, config);
-    };
-
-    document.getElementById('registrationForm').onsubmit = async function(event) {
-        event.preventDefault(); // Предотвращаем стандартное поведение формы
-
-        const formData = new FormData(this);
-        const data = {
-            username: formData.get('username'),
-            password: formData.get('password'),
-            confirmPassword: formData.get('confirmPassword')
-        };
-
-        try {
-            const response = await fetch('/api/registration', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                const token = await response.text(); // Получаем токен
-                localStorage.setItem("token", token); // Сохраняем токен в локальном хранилище
-                window.location.href = '/people'; // Перенаправляем
-            } else {
-                const errorText = await response.text();
-                document.getElementById('errorMessage').textContent = errorText;
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        } catch (error) {
-            console.error('Ошибка:', error);
-            document.getElementById('errorMessage').textContent = 'Ошибка при регистрации. Попробуйте еще раз.';
-            document.getElementById('errorMessage').style.display = 'block';
-        }
-    };
-</script>
 
 
 </body>
