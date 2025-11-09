@@ -2,9 +2,10 @@ package org.example.study_group_service;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.ee10.websocket.server.config.JettyWebSocketServletContainerInitializer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.example.study_group_service.config.RootConfig;
 import org.example.study_group_service.config.WebConfig;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class Main {
         ServletContextHandler ctx = new ServletContextHandler(ServletContextHandler.SESSIONS);
         ctx.setContextPath("/");
         server.setHandler(ctx);
+
+        // WebSocket
+        JettyWebSocketServletContainerInitializer.configure(ctx, null);
 
         AnnotationConfigWebApplicationContext rootCtx = new AnnotationConfigWebApplicationContext();
         rootCtx.register(RootConfig.class);

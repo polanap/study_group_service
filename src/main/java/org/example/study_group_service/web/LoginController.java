@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.models.dto.incomming.UserLogin;
 import org.example.study_group_service.service.AuthenticationService;
 import org.example.study_group_service.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

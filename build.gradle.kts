@@ -27,7 +27,6 @@ dependencies {
     // web
     implementation("org.springframework:spring-webmvc:6.2.11")
     implementation("org.springframework:spring-context:6.2.11")
-    implementation("jakarta.servlet:jakarta.servlet-api:6.1.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.20.0")
 
     // security
@@ -46,9 +45,10 @@ dependencies {
     implementation("org.thymeleaf:thymeleaf-spring6:3.1.2.RELEASE")
 
     // websocket
-    implementation("org.springframework:spring-websocket:6.2.11")
-    implementation("org.springframework:spring-messaging:6.2.11")
-    implementation("org.glassfish.tyrus.bundles:tyrus-standalone-client:2.1.3")
+    implementation("org.springframework:spring-websocket:6.2.12")
+    implementation("org.springframework:spring-messaging:6.2.12")
+    implementation("org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jetty-server:12.1.3")
+    implementation("org.eclipse.jetty.websocket:jetty-websocket-jetty-api:12.1.3")
 
     // liquibase-core
     implementation("org.liquibase:liquibase-core:4.29.0")
@@ -75,13 +75,13 @@ dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
     // embedded server
-    implementation("org.eclipse.jetty:jetty-server:11.0.15")
-    implementation("org.eclipse.jetty:jetty-servlet:11.0.15")
+    implementation("org.eclipse.jetty:jetty-server:12.1.3")
+    implementation("org.eclipse.jetty.ee10:jetty-ee10-servlet:12.1.3")
 
     // логирование
     implementation("ch.qos.logback:logback-classic:1.4.11")
 
-//    // Jakarta EL (для Hibernate Validator)
+    // Jakarta EL (для Hibernate Validator)
     implementation("jakarta.el:jakarta.el-api:6.0.1")
     implementation("org.glassfish:jakarta.el:5.0.0-M1")
 
@@ -101,6 +101,10 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

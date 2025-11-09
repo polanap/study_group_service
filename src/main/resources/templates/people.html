@@ -4,8 +4,7 @@
     <meta charset="utf-8" />
     <title>People List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
+
     <style>
         table { width:100%; border-collapse: collapse; }
         th,td { border:1px solid #ddd; padding:8px; }
@@ -79,6 +78,9 @@
         <div style="margin-top:8px;"><button id="saveAdd">Save</button></div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stomp-websocket/lib/stomp.min.js"></script>
 
 <script>
     const apiBase = '/api/person';

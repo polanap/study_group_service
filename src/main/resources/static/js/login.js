@@ -17,7 +17,7 @@ window.fetch = function(...args) {
     return originalFetch(url, config);
 };
 
-document.getElementById('registrationForm').onsubmit = async function(event) {
+document.getElementById('loginForm').onsubmit = async function(event) {
     event.preventDefault(); // Предотвращаем стандартное поведение формы
 
     const formData = new FormData(this);
@@ -28,7 +28,7 @@ document.getElementById('registrationForm').onsubmit = async function(event) {
     };
 
     try {
-        const response = await fetch('/api/registration', {
+        const response = await fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

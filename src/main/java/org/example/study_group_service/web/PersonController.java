@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.example.study_group_service.models.SortOrder;
 import org.example.study_group_service.models.dto.incomming.Person;
 import org.example.study_group_service.models.entity.PersonEntity;
+import org.example.study_group_service.service.MessagingService;
 import org.example.study_group_service.service.PersonService;
-import org.example.study_group_service.service.handler.PersonWebSocketHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.Objects;
 
 import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
@@ -21,23 +22,22 @@ import static org.hibernate.internal.util.collections.CollectionHelper.listOf;
 @RequiredArgsConstructor
 public class PersonController {
     private final PersonService personService;
-    private final PersonWebSocketHandler personWebSocketHandler;
+    private final MessagingService messagingService;
 
     @DeleteMapping
-    public void deleteById(@RequestParam Long id){
+    public void deleteById(@RequestParam Long id) {
         personService.deleteById(id);
-        personWebSocketHandler.sendPeopleUpdate();
+        messagingService.sendMessageToTopic("/topic/people", "313");
     }
 
     @PostMapping
-    public void save(@RequestBody Person person){
+    public void save(@RequestBody Person person) {
         personService.save(person);
-        personWebSocketHandler.sendPeopleUpdate();
-
+        messagingService.sendMessageToTopic("/topic/people", "313");
     }
 
     @GetMapping("/{id}")
-    public PersonEntity findById(@PathVariable("id") Long id){
+    public PersonEntity findById(@PathVariable("id") Long id) {
         return personService.findById(id);
     }
 
